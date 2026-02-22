@@ -63,6 +63,6 @@
 
 ## Команда
 
-- Ментор (Backend): user0k
-- Студент (Frontend): tatyanakorlarina
-- Студент (Frontend):  bukt0r
+- Ментор (Backend): Pavel Altov - https://github.com/user0k
+- Студент (Frontend): Tatyana korlarina - https://github.com/tatyanakorlarina
+- Студент (Frontend):  Viktor Ufimcev - https://github.com/bukt0r
