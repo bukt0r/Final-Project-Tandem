@@ -1,0 +1,30 @@
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.tsx'
+
+const createRootContainer = (): HTMLElement => {
+  const existingRootElement = document.getElementById('root')
+
+  if (existingRootElement instanceof HTMLElement) {
+    return existingRootElement
+  }
+
+  const rootElement = document.createElement('div')
+  rootElement.id = 'root'
+  document.body.appendChild(rootElement)
+
+  return rootElement
+}
+
+const renderApplication = (): void => {
+  const container = createRootContainer()
+
+  createRoot(container).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  )
+}
+
+renderApplication()
