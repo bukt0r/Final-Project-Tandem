@@ -61,6 +61,11 @@
 
 ---
 
+## Deployment
+
+- Production: https://tech-interview-trainer-hazel.vercel.app/
+- Platform: Vercel
+
 ## Команда
 
 - Ментор (Backend): Pavel Altov - https://github.com/user0k
