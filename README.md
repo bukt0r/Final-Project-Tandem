@@ -63,7 +63,7 @@
 
 ## Deployment
 
-- Production: https://tech-interview-trainer-hazel.vercel.app/
+- Production: https://tech-interview-trainer-u3vr.vercel.app/
 - Platform: Vercel
 
 ## Команда
