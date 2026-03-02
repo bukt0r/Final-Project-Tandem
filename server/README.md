@@ -1,98 +1,180 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# RS Tandem API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend API for the technical interview platform built with NestJS and Prisma.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Quick Start for Beginners
 
-## Description
+### Step 1: Start the Database and API Server (Docker)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
+Before you proceed, you need to install Docker on your machine (I prefer using Docker Desktop).
 
 ```bash
-$ npm install
+# Navigate to the server directory
+cd server
+
+# Start PostgreSQL database and the API server
+docker compose up -d
+
+# This will download and start:
+# - PostgreSQL database
+# - The API server (handles requests from the frontend)
 ```
 
-## Compile and run the project
+### Step 2: Install Dependencies
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# Install all the required packages
+npm install
 ```
 
-## Run tests
+### Step 3: .env file
+
+Ensure that you have `.env` file. If you're confused with it, just copy everything from `.env.example` into `.env`.
+
+### Step 4: Sync Prisma Client
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Generate Prisma Client from schema (creates type-safe DB client in node_modules/.prisma/client)
+npx prisma generate
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Step 5: Start the Development Server
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Start the API server in development mode
+npm run start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Next: Access Your API
 
-## Resources
+- **API Server**: http://localhost:3000/api
+- **Database**: PostgreSQL running on port 5432
 
-Check out a few resources that may come in handy when working with NestJS:
+### Available Commands
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+# Development
+npm run start:dev          # Start development server with auto-restart
+npm run start              # Start production server
 
-## Support
+# Database
+npm run prisma:generate    # Generate TypeScript types
+npm run prisma:migrate     # Create and run database migrations
+npm run prisma:reset       # Reset database (WARNING: deletes all data!)
+npm run prisma:studio      # Open database GUI
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Available API Endpoints
 
-## Stay in touch
+### Questions
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+**Get All Questions**
 
-## License
+```bash
+http://localhost:3000/questions
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+**Create a New Question**
+
+```bash
+curl -X POST http://localhost:3000/questions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "What is a closure in JavaScript?",
+    "difficulty": "MEDIUM",
+  }'
+```
+
+**Get Questions by Difficulty**
+
+```bash
+# Get all easy questions
+http://localhost:3000/questions/difficulty/easy
+
+# Get all medium questions
+http://localhost:3000/questions/difficulty/medium
+
+# Get all hard questions
+http://localhost:3000/questions/difficulty/hard
+```
+
+**Update a Question**
+
+```bash
+curl -X PATCH http://localhost:3000/questions/question-id \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Updated question title",
+    "difficulty": "hard"
+  }'
+```
+
+**Delete a Question**
+
+```bash
+curl -X DELETE http://localhost:3000/questions/question-id
+```
+
+### Topics Management
+
+**Get All Topics**
+
+```bash
+http://localhost:3000/topics
+```
+
+**Create a New Topic**
+
+```bash
+curl -X POST http://localhost:3000/topics \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "JavaScript",
+    "description": "Questions about JavaScript programming language"
+  }'
+```
+
+**Get a Specific Topic**
+
+```bash
+http://localhost:3000/topics/topic-id
+```
+
+**Update a Topic**
+
+```bash
+curl -X PATCH http://localhost:3000/topics/topic-id \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Updated Topic Title",
+    "description": "Updated description"
+  }'
+```
+
+**Delete a Topic**
+
+```bash
+curl -X DELETE http://localhost:3000/topics/topic-id
+```
+
+## Troubleshooting
+
+**Database connection issues**
+
+```bash
+# Check if PostgreSQL is running
+docker ps
+
+# Restart the database
+docker compose restart postgres
+```
+
+**Prisma migration errors**
+
+```bash
+# Reset database and migrations (WARNING: deletes all data!)
+npx prisma migrate reset
+
+# Or create a new migration
+npx prisma migrate dev --name fix-something
+```
