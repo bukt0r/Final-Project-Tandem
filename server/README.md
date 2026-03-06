@@ -82,6 +82,7 @@ curl -X POST http://localhost:3000/questions \
   -d '{
     "title": "What is a closure in JavaScript?",
     "difficulty": "MEDIUM",
+    "topicIds": ["topic-1", "topic-2"]
   }'
 ```
 
@@ -98,6 +99,13 @@ http://localhost:3000/questions/difficulty/medium
 http://localhost:3000/questions/difficulty/hard
 ```
 
+**Get Questions by Topic**
+
+```bash
+# Get all questions for a specific topic
+http://localhost:3000/questions/topic/topic-id
+```
+
 **Update a Question**
 
 ```bash
@@ -105,7 +113,8 @@ curl -X PATCH http://localhost:3000/questions/question-id \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Updated question title",
-    "difficulty": "hard"
+    "difficulty": "hard",
+    "topicIds": ["topic-new", "topic-another"]
   }'
 ```
 
