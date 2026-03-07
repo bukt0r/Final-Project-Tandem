@@ -124,7 +124,7 @@ curl -X PATCH http://localhost:3000/api/questions/question-id \
 curl -X DELETE http://localhost:3000/api/questions/question-id
 ```
 
-### Topics Management
+### Topics
 
 **Get All Topics**
 
@@ -164,6 +164,52 @@ curl -X PATCH http://localhost:3000/api/topics/topic-id \
 
 ```bash
 curl -X DELETE http://localhost:3000/api/topics/topic-id
+```
+
+## Users
+
+**Get All Users**
+
+```bash
+http://localhost:3000/api/users
+```
+
+**Create a New User**
+
+Login is optional, but both email and login are unique.
+
+```bash
+curl -X POST http://localhost:3000/api/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "securepassword123",
+    "login": "username"
+  }'
+```
+
+**Get a Specific User**
+
+```bash
+http://localhost:3000/api/users/user-id
+```
+
+**Update a User**
+
+```bash
+curl -X PATCH http://localhost:3000/api/users/user-id \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "newemail@example.com",
+    "password": "newpassword123",
+    "login": "newusername"
+  }'
+```
+
+**Delete a User**
+
+```bash
+curl -X DELETE http://localhost:3000/api/users/user-id
 ```
 
 ## Troubleshooting
