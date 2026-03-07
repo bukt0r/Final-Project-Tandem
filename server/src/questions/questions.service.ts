@@ -4,6 +4,7 @@ import { PrismaService } from 'src/database/prisma.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { Difficulty } from './dto/create-question.dto';
+import { QuestionResponseDto } from './dto/question-response.dto';
 
 @Injectable()
 export class QuestionsService {
@@ -25,15 +26,39 @@ export class QuestionsService {
     return this.prisma.question.create({ data });
   }
 
-  async findAll(): Promise<Question[]> {
-    return this.prisma.question.findMany();
+  async findAll(): Promise<QuestionResponseDto[]> {
+    const questions = await this.prisma.question.findMany({
+      include: { topics: true },
+    });
+
+    return questions.map((question) => ({
+      id: question.id,
+      title: question.title,
+      difficulty: question.difficulty,
+      createdAt: question.createdAt,
+      updatedAt: question.updatedAt,
+      topicIds: question.topics.map((topic) => topic.id),
+    }));
   }
 
-  async findOne(id: string): Promise<Question | null> {
-    return this.prisma.question.findUnique({
+  async findOne(id: string): Promise<QuestionResponseDto | null> {
+    const question = await this.prisma.question.findUnique({
       where: { id },
       include: { topics: true },
     });
+
+    if (!question) {
+      return null;
+    }
+
+    return {
+      id: question.id,
+      title: question.title,
+      difficulty: question.difficulty,
+      createdAt: question.createdAt,
+      updatedAt: question.updatedAt,
+      topicIds: question.topics.map((topic) => topic.id),
+    };
   }
 
   async findByDifficulty(difficulty: Difficulty): Promise<Question[]> {
