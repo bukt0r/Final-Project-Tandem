@@ -32,6 +32,17 @@ model Topic {
   @@map("topics")
 }
 
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  login     String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("users")
+}
+
 enum Difficulty {
   easy
   medium
