@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Question {
+  id         String     @id @default(uuid())
+  title      String
+  difficulty Difficulty
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  
+  // Many-to-many relationship with topics
+  topics     Topic[]    @relation("QuestionTopics")
+  
+  @@map("questions")
+}
+
+model Topic {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  // Many-to-many relationship with questions
+  questions   Question[] @relation("QuestionTopics")
+  
+  @@map("topics")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  login     String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("users")
+}
+
+enum Difficulty {
+  easy
+  medium
+  hard
+}
