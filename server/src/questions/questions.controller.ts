@@ -59,11 +59,17 @@ export class QuestionsController {
 
   @Get('difficulty/:difficulty')
   @HttpCode(HttpStatus.OK)
-  async findByDifficulty(@Param('difficulty') difficulty: string) {
-    if (!Object.values(Difficulty).includes(difficulty as Difficulty)) {
+  async findByDifficulty(@Param('difficulty') difficulty: Difficulty) {
+    if (!Object.values(Difficulty).includes(difficulty)) {
       throw new NotFoundException(`Invalid difficulty: ${difficulty}`);
     }
 
-    return this.questionsService.findByDifficulty(difficulty as Difficulty);
+    return this.questionsService.findByDifficulty(difficulty);
+  }
+
+  @Get('topic/:topicId')
+  @HttpCode(HttpStatus.OK)
+  async findByTopic(@Param('topicId') topicId: string) {
+    return this.questionsService.findByTopic(topicId);
   }
 }

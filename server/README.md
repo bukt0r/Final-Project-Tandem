@@ -71,17 +71,18 @@ npm run prisma:studio      # Open database GUI
 **Get All Questions**
 
 ```bash
-http://localhost:3000/questions
+http://localhost:3000/api/questions
 ```
 
 **Create a New Question**
 
 ```bash
-curl -X POST http://localhost:3000/questions \
+curl -X POST http://localhost:3000/api/questions \
   -H "Content-Type: application/json" \
   -d '{
     "title": "What is a closure in JavaScript?",
     "difficulty": "MEDIUM",
+    "topicIds": ["topic-1", "topic-2"]
   }'
 ```
 
@@ -89,30 +90,38 @@ curl -X POST http://localhost:3000/questions \
 
 ```bash
 # Get all easy questions
-http://localhost:3000/questions/difficulty/easy
+http://localhost:3000/api/questions/difficulty/easy
 
 # Get all medium questions
-http://localhost:3000/questions/difficulty/medium
+http://localhost:3000/api/questions/difficulty/medium
 
 # Get all hard questions
-http://localhost:3000/questions/difficulty/hard
+http://localhost:3000/api/questions/difficulty/hard
+```
+
+**Get Questions by Topic**
+
+```bash
+# Get all questions for a specific topic
+http://localhost:3000/api/questions/topic/topic-id
 ```
 
 **Update a Question**
 
 ```bash
-curl -X PATCH http://localhost:3000/questions/question-id \
+curl -X PATCH http://localhost:3000/api/questions/question-id \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Updated question title",
-    "difficulty": "hard"
+    "difficulty": "hard",
+    "topicIds": ["topic-new", "topic-another"]
   }'
 ```
 
 **Delete a Question**
 
 ```bash
-curl -X DELETE http://localhost:3000/questions/question-id
+curl -X DELETE http://localhost:3000/api/questions/question-id
 ```
 
 ### Topics Management
@@ -120,13 +129,13 @@ curl -X DELETE http://localhost:3000/questions/question-id
 **Get All Topics**
 
 ```bash
-http://localhost:3000/topics
+http://localhost:3000/api/topics
 ```
 
 **Create a New Topic**
 
 ```bash
-curl -X POST http://localhost:3000/topics \
+curl -X POST http://localhost:3000/api/topics \
   -H "Content-Type: application/json" \
   -d '{
     "title": "JavaScript",
@@ -137,13 +146,13 @@ curl -X POST http://localhost:3000/topics \
 **Get a Specific Topic**
 
 ```bash
-http://localhost:3000/topics/topic-id
+http://localhost:3000/api/topics/topic-id
 ```
 
 **Update a Topic**
 
 ```bash
-curl -X PATCH http://localhost:3000/topics/topic-id \
+curl -X PATCH http://localhost:3000/api/topics/topic-id \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Updated Topic Title",
@@ -154,7 +163,7 @@ curl -X PATCH http://localhost:3000/topics/topic-id \
 **Delete a Topic**
 
 ```bash
-curl -X DELETE http://localhost:3000/topics/topic-id
+curl -X DELETE http://localhost:3000/api/topics/topic-id
 ```
 
 ## Troubleshooting
