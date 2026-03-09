@@ -7,9 +7,9 @@ export interface DifficultyBadgeProps {
 }
 
 const difficultyStyles: Record<QuestionDifficulty, string> = {
-  easy: 'bg-emerald-500/20 text-emerald-400 ring-emerald-500/30',
-  medium: 'bg-amber-500/20 text-amber-400 ring-amber-500/30',
-  hard: 'bg-rose-500/20 text-rose-400 ring-rose-500/30',
+  easy: 'bg-emerald-100 text-emerald-700 ring-emerald-200',
+  medium: 'bg-amber-100 text-amber-700 ring-amber-200',
+  hard: 'bg-rose-100 text-rose-700 ring-rose-200',
 }
 
 const difficultyLabels: Record<QuestionDifficulty, string> = {

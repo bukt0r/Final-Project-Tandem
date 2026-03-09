@@ -1,3 +1,38 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-app-bg: oklch(0.97 0.008 250);
+  --color-app-surface: oklch(1 0 0);
+  --color-app-surface-hover: oklch(0.96 0.006 250);
+  --color-app-border: oklch(0.91 0.01 250);
+  --color-app-text: oklch(0.28 0.02 260);
+  --color-app-text-muted: oklch(0.5 0.02 260);
+  --color-app-accent: oklch(0.65 0.15 182);
+  --color-app-accent-hover: oklch(0.72 0.14 182);
+  --color-app-success: oklch(0.696 0.17 162.48);
+  --color-app-warning: oklch(0.769 0.188 70.08);
+  --color-app-danger: oklch(0.645 0.246 16.439);
+
+  --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --text-page-title: 1.25rem;
+  --text-page-title--line-height: 1.75;
+  --text-card-title: 0.875rem;
+  --text-card-title--line-height: 1.25;
+  --text-body: 0.875rem;
+  --text-body--line-height: 1.25;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.33;
+  --font-weight-page-title: 600;
+  --font-weight-card: 500;
+  --font-weight-body: 400;
+
+  --spacing-page-y: 1.5rem;
+  --spacing-page-x: 1rem;
+  --spacing-card: 1rem;
+  --spacing-card-gap: 0.75rem;
+  --spacing-section: 1rem;
+  --spacing-18: 4.5rem;
+  --spacing-22: 5.5rem;
+  --spacing-30: 7.5rem;
+}

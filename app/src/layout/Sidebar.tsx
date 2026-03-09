@@ -12,8 +12,8 @@ const navItems: readonly { to: string; label: string }[] = [
 ]
 
 const linkClass =
-  'block rounded-md px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-slate-50'
-const activeClass = 'bg-slate-800 text-slate-50'
+  'block rounded-md px-3 py-2 text-sm font-medium text-app-text-muted transition hover:bg-app-surface-hover hover:text-app-text'
+const activeClass = 'bg-app-surface-hover text-app-text'
 
 const getLinkClassName = ({ isActive }: { isActive: boolean }): string =>
   [linkClass, isActive ? activeClass : ''].filter(Boolean).join(' ')
@@ -21,7 +21,7 @@ const getLinkClassName = ({ isActive }: { isActive: boolean }): string =>
 export const Sidebar: FC = () => {
   return (
     <aside className={styles.sidebar} aria-label="Sidebar navigation">
-      <nav className="border-r border-slate-800 bg-slate-950/50 px-4 py-4" aria-label="Main navigation">
+      <nav className="border-r border-app-border bg-app-bg px-4 py-4" aria-label="Main navigation">
         <ul className="flex flex-col gap-1">
           {navItems.map((item) => (
             <li key={item.to}>
