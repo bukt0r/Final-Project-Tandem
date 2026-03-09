@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { ROUTE_PATHS } from '../routing/routePaths'
 import styles from './Layout.module.css'
 
-const navItems: ReadonlyArray<{ to: string; label: string }> = [
+const navItems: readonly { to: string; label: string }[] = [
   { to: ROUTE_PATHS.home, label: 'Home' },
   { to: ROUTE_PATHS.questions, label: 'Questions' },
   { to: ROUTE_PATHS.quiz, label: 'Quiz' },
