@@ -1,0 +1,33 @@
+.btn {
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.btn-small {
+  padding: 6px 12px;
+}
+
+.btn-medium {
+  padding: 10px 18px;
+}
+
+.btn-large {
+  padding: 14px 24px;
+}
+
+.btn-blue {
+  background: #3498db;
+  color: white;
+}
+
+.btn-green {
+  background: #2ecc71;
+  color: white;
+}
+
+.btn-red {
+  background: #e74c3c;
+  color: white;
+}
