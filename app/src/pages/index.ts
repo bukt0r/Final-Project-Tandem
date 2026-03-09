@@ -1,0 +1,5 @@
+export { default as HomePage } from './HomePage'
+export { default as QuestionsPage } from './QuestionsPage'
+export { default as QuizPage } from './QuizPage'
+export { default as StatisticsPage } from './StatisticsPage'
+export { default as FavoritesPage } from './FavoritesPage'
