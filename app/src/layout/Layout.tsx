@@ -6,12 +6,12 @@ import { Header } from './Header'
 import { Sidebar } from './Sidebar'
 
 const PageFallback: FC = () => (
-  <div className="flex min-h-[12rem] items-center justify-center text-slate-400">Loading…</div>
+  <div className="flex min-h-[12rem] items-center justify-center text-app-text-muted">Loading…</div>
 )
 
 export const Layout: FC = () => {
   return (
-    <div className={`${styles.pageContainer} min-h-screen bg-slate-950 text-slate-50`}>
+    <div className={`${styles.pageContainer} min-h-screen bg-app-bg text-app-text`}>
       <Header />
       <div className={styles.body}>
         <Sidebar />

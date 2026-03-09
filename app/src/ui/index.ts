@@ -9,3 +9,6 @@ export const noop = (): void => {
 
 export const getButtonAriaLabel = (props: ButtonProps): string =>
   props.label.trim().length > 0 ? props.label : 'Button'
+
+export { DifficultyBadge, type DifficultyBadgeProps } from './DifficultyBadge'
+export { QuestionCard, type QuestionCardProps } from './QuestionCard'

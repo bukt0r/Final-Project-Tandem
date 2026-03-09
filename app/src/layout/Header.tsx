@@ -11,18 +11,17 @@ const navItems: readonly { to: string; label: string }[] = [
 ]
 
 const linkClass =
-  'rounded-md px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-slate-50'
-const activeClass = 'bg-slate-800 text-slate-50'
+  'rounded-md px-3 py-2 text-sm font-medium text-app-text-muted transition hover:bg-app-surface-hover hover:text-app-text'
+const activeClass = 'bg-app-surface-hover text-app-text'
 
 const getLinkClassName = ({ isActive }: { isActive: boolean }): string =>
   [linkClass, isActive ? activeClass : ''].filter(Boolean).join(' ')
 
 export const Header: FC = () => {
   return (
-    <header className="flex shrink-0 border-b border-slate-800 bg-slate-950">
+    <header className="flex shrink-0 border-b border-app-border bg-app-surface">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3 lg:max-w-none lg:px-6">
-        <span className="text-sm font-semibold text-slate-50">Tech Interview Trainer</span>
-        {/* Mobile/tablet: nav in header; desktop (lg): nav in sidebar, header stays minimal */}
+        <span className="text-sm font-semibold text-app-text">Tech Interview Trainer</span>
         <nav className="flex gap-1 lg:hidden" aria-label="Main navigation">
           {navItems.map((item) => (
             <NavLink
