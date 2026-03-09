@@ -1,18 +1,19 @@
-import "./Input.css";
+import type { ReactElement, ChangeEvent } from "react"
+import "./Input.css"
 
-type InputProps = {
-  type: string;
-  placeholder: string;
-  value: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-};
+interface InputProps {
+  type: string
+  placeholder: string
+  value: string
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void
+}
 
 export default function Input({
   type,
   placeholder,
   value,
   onChange,
-}: InputProps) {
+}: InputProps): ReactElement {
   return (
     <input
       className="input"
@@ -21,5 +22,5 @@ export default function Input({
       value={value}
       onChange={onChange}
     />
-  );
+  )
 }
