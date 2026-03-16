@@ -1,6 +1,6 @@
 export type Difficulty = 'easy' | 'medium' | 'hard'
 
-export type Question = {
+export interface Question {
   readonly id: string
   readonly question: string
   readonly answer: string
