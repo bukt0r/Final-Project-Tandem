@@ -1,8 +1,8 @@
 import type { FC } from 'react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Question } from '../features/questions'
 import { fetchQuestions } from '../api'
-import { QuestionCard } from '../ui'
+import { QuestionCard, Loader, ErrorMessage } from '../ui'
 
 type QuestionsState =
   | { status: 'loading' }
@@ -11,9 +11,15 @@ type QuestionsState =
 
 const QuestionsPage: FC = () => {
   const [state, setState] = useState<QuestionsState>({ status: 'loading' })
+  const cancelRef = useRef<(() => void) | null>(null)
 
-  useEffect(() => {
+  const loadQuestions = useCallback((): void => {
+    cancelRef.current?.()
     let cancelled = false
+    cancelRef.current = () => {
+      cancelled = true
+    }
+
     const load = async (): Promise<void> => {
       try {
         const data = await fetchQuestions()
@@ -22,22 +28,32 @@ const QuestionsPage: FC = () => {
         }
       } catch (err) {
         if (!cancelled) {
-          const message = err instanceof Error ? err.message : 'Failed to load questions'
+          const message = err instanceof Error ? err.message : 'Не удалось загрузить вопросы'
           setState({ status: 'error', message })
         }
       }
     }
+
     void load()
-    return () => {
-      cancelled = true
-    }
   }, [])
+
+  useEffect(() => {
+    loadQuestions()
+    return () => {
+      cancelRef.current?.()
+    }
+  }, [loadQuestions])
+
+  const handleRetry = useCallback((): void => {
+    setState({ status: 'loading' })
+    loadQuestions()
+  }, [loadQuestions])
 
   if (state.status === 'loading') {
     return (
       <section className="px-4 py-6">
         <h1 className="text-xl font-semibold text-app-text">Questions</h1>
-        <p className="mt-4 text-sm text-app-text-muted">Loading…</p>
+        <Loader className="mt-4" />
       </section>
     )
   }
@@ -46,9 +62,9 @@ const QuestionsPage: FC = () => {
     return (
       <section className="px-4 py-6">
         <h1 className="text-xl font-semibold text-app-text">Questions</h1>
-        <p className="mt-4 text-sm text-app-danger" role="alert">
-          {state.message}
-        </p>
+        <div className="mt-4">
+          <ErrorMessage message={state.message} onRetry={handleRetry} />
+        </div>
       </section>
     )
   }

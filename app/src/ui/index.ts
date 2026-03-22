@@ -12,3 +12,5 @@ export const getButtonAriaLabel = (props: ButtonProps): string =>
 
 export { DifficultyBadge, type DifficultyBadgeProps } from './DifficultyBadge'
 export { QuestionCard, type QuestionCardProps } from './QuestionCard'
+export { Loader, type LoaderProps } from './Loader'
+export { ErrorMessage, type ErrorMessageProps } from './ErrorMessage'

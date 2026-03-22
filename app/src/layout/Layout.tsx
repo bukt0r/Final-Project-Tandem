@@ -4,10 +4,7 @@ import { Outlet } from 'react-router-dom'
 import styles from './Layout.module.css'
 import { Header } from './Header'
 import { Sidebar } from './Sidebar'
-
-const PageFallback: FC = () => (
-  <div className="flex min-h-[12rem] items-center justify-center text-app-text-muted">Loading…</div>
-)
+import { Loader } from '../ui'
 
 export const Layout: FC = () => {
   return (
@@ -17,7 +14,7 @@ export const Layout: FC = () => {
         <Sidebar />
         <main className={styles.main}>
           <div className={`${styles.contentContainer} flex-1 py-6`}>
-            <Suspense fallback={<PageFallback />}>
+            <Suspense fallback={<Loader />}>
               <Outlet />
             </Suspense>
           </div>
