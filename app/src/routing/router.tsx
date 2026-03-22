@@ -11,6 +11,7 @@ const QuestionsPage = lazyPage(() => import('../pages/QuestionsPage'))
 const QuizPage = lazyPage(() => import('../pages/QuizPage'))
 const StatisticsPage = lazyPage(() => import('../pages/StatisticsPage'))
 const FavoritesPage = lazyPage(() => import('../pages/FavoritesPage'))
+const NotFoundPage = lazyPage(() => import('../pages/NotFoundPage'))
 
 const routes: RouteObject[] = [
   {
@@ -22,6 +23,7 @@ const routes: RouteObject[] = [
       { path: 'quiz', element: <QuizPage /> },
       { path: 'statistics', element: <StatisticsPage /> },
       { path: 'favorites', element: <FavoritesPage /> },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ]
