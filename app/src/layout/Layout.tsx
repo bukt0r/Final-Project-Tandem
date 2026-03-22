@@ -1,15 +1,14 @@
 import type { FC } from 'react'
 import { Suspense } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import styles from './Layout.module.css'
 import { Header } from './Header'
 import { Sidebar } from './Sidebar'
-
-const PageFallback: FC = () => (
-  <div className="flex min-h-[12rem] items-center justify-center text-app-text-muted">Loading…</div>
-)
+import { Loader } from '../ui'
 
 export const Layout: FC = () => {
+  const location = useLocation()
+
   return (
     <div className={`${styles.pageContainer} min-h-screen bg-app-bg text-app-text`}>
       <Header />
@@ -17,7 +16,7 @@ export const Layout: FC = () => {
         <Sidebar />
         <main className={styles.main}>
           <div className={`${styles.contentContainer} flex-1 py-6`}>
-            <Suspense fallback={<PageFallback />}>
+            <Suspense key={location.pathname} fallback={<Loader />}>
               <Outlet />
             </Suspense>
           </div>

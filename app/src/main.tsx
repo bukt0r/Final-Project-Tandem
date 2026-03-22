@@ -17,8 +17,16 @@ const createRootContainer = (): HTMLElement => {
   return rootElement
 }
 
+const removePreloader = (): void => {
+  const preloader = document.getElementById('app-preloader')
+  if (preloader) {
+    preloader.remove()
+  }
+}
+
 const renderApplication = (): void => {
   const container = createRootContainer()
+  removePreloader()
 
   createRoot(container).render(
     <StrictMode>
