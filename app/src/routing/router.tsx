@@ -2,6 +2,7 @@ import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
 import { createBrowserRouter, type RouteObject } from 'react-router-dom'
 import { ROUTE_PATHS } from './routePaths'
 import { Layout } from '../layout'
+import { RouteErrorFallback } from '../ui/RouteErrorFallback'
 
 const lazyPage = (importFn: () => Promise<{ default: ComponentType }>): LazyExoticComponent<ComponentType> =>
   lazy(importFn)
@@ -17,6 +18,7 @@ const routes: RouteObject[] = [
   {
     path: ROUTE_PATHS.home,
     element: <Layout />,
+    errorElement: <RouteErrorFallback />,
     children: [
       { index: true, element: <HomePage /> },
       { path: 'questions', element: <QuestionsPage /> },
