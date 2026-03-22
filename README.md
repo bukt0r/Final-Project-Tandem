@@ -66,6 +66,15 @@
 - Production: https://tech-interview-trainer-u3vr.vercel.app/
 - Platform: Vercel
 
+## Week 5 Checkpoint Video
+
+Видео демонстрирует:
+- Страницу 404
+- Loading state
+- Обработку ошибок API
+
+ Ссылка на видео: https://youtu.be/CXYLstaGsKY
+
 ## Команда
 
 - Ментор (Backend): Pavel Altov - https://github.com/user0k
