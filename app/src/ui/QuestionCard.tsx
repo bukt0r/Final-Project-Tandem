@@ -1,5 +1,5 @@
 import type { FC } from 'react'
-import type { Question } from '../features/questions'
+import type { Question } from '../entities/question/model/types'
 import { DifficultyBadge } from './DifficultyBadge'
 
 export interface QuestionCardProps {
@@ -14,15 +14,15 @@ export const QuestionCard: FC<QuestionCardProps> = ({ question }) => {
     >
       <div className="flex items-start justify-between gap-3">
         <h2 id={`question-title-${question.id}`} className="text-sm font-medium text-app-text">
-          {question.title}
+          {question.question}
         </h2>
         <DifficultyBadge difficulty={question.difficulty} className="shrink-0" />
       </div>
-      {question.topicIds.length > 0 && (
-        <p className="mt-2 text-xs text-app-text-muted">
-          Topics: {question.topicIds.length} {question.topicIds.length === 1 ? 'topic' : 'topics'}
-        </p>
-      )}
+      <div className="mt-2">
+        <span className="inline-block rounded bg-app-bg px-2 py-0.5 text-xs text-app-text-muted">
+          {question.category}
+        </span>
+      </div>
     </article>
   )
 }
