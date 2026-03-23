@@ -8,13 +8,16 @@ import { useDebounce, loadFromStorage, saveToStorage } from '../shared'
 const ALL_CATEGORIES = ''
 const SEARCH_DEBOUNCE_MS = 300
 const STORAGE_KEY_STATUS = 'knowledge-status'
+const STORAGE_KEY_FAVORITES = 'favorites'
 
 type StatusMap = Record<string, KnowledgeStatus>
+type FavoritesSet = string[]
 
 const QuestionsPage: FC = () => {
   const [selectedCategory, setSelectedCategory] = useState(ALL_CATEGORIES)
   const [searchInput, setSearchInput] = useState('')
   const [statusMap, setStatusMap] = useState<StatusMap>(() => loadFromStorage<StatusMap>(STORAGE_KEY_STATUS, {}))
+  const [favorites, setFavorites] = useState<FavoritesSet>(() => loadFromStorage<FavoritesSet>(STORAGE_KEY_FAVORITES, []))
   const debouncedSearch = useDebounce(searchInput, SEARCH_DEBOUNCE_MS)
 
   const categories = useMemo(() => getCategories(), [])
@@ -42,6 +45,16 @@ const QuestionsPage: FC = () => {
     setStatusMap((prev) => {
       const next = { ...prev, [questionId]: status }
       saveToStorage(STORAGE_KEY_STATUS, next)
+      return next
+    })
+  }, [])
+
+  const handleFavoriteToggle = useCallback((questionId: string): void => {
+    setFavorites((prev) => {
+      const next = prev.includes(questionId)
+        ? prev.filter((id) => id !== questionId)
+        : [...prev, questionId]
+      saveToStorage(STORAGE_KEY_FAVORITES, next)
       return next
     })
   }, [])
@@ -97,6 +110,8 @@ const QuestionsPage: FC = () => {
                 question={q}
                 knowledgeStatus={statusMap[q.id] ?? 'none'}
                 onStatusChange={handleStatusChange}
+                isFavorite={favorites.includes(q.id)}
+                onFavoriteToggle={handleFavoriteToggle}
               />
             </li>
           ))}

@@ -7,6 +7,8 @@ export interface QuestionCardProps {
   readonly question: Question
   readonly knowledgeStatus?: KnowledgeStatus
   readonly onStatusChange?: (questionId: string, status: KnowledgeStatus) => void
+  readonly isFavorite?: boolean
+  readonly onFavoriteToggle?: (questionId: string) => void
 }
 
 const borderByStatus: Record<KnowledgeStatus, string> = {
@@ -25,6 +27,8 @@ export const QuestionCard: FC<QuestionCardProps> = ({
   question,
   knowledgeStatus = 'none',
   onStatusChange,
+  isFavorite = false,
+  onFavoriteToggle,
 }) => {
   const [isFlipped, setIsFlipped] = useState(false)
 
@@ -41,6 +45,11 @@ export const QuestionCard: FC<QuestionCardProps> = ({
     e.stopPropagation()
     onStatusChange?.(question.id, knowledgeStatus === 'unknown' ? 'none' : 'unknown')
   }, [question.id, knowledgeStatus, onStatusChange])
+
+  const handleFavorite = useCallback((e: MouseEvent<HTMLButtonElement>): void => {
+    e.stopPropagation()
+    onFavoriteToggle?.(question.id)
+  }, [question.id, onFavoriteToggle])
 
   const badge = statusBadge[knowledgeStatus]
 
@@ -67,9 +76,19 @@ export const QuestionCard: FC<QuestionCardProps> = ({
             </span>
           )}
         </div>
-        <span className="text-xs text-app-text-muted">
-          {isFlipped ? 'Ответ' : 'Вопрос'}
-        </span>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleFavorite}
+            className={`text-lg transition ${isFavorite ? 'text-amber-400' : 'text-gray-300 hover:text-amber-300'}`}
+            aria-label={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
+          >
+            {isFavorite ? '\u2605' : '\u2606'}
+          </button>
+          <span className="text-xs text-app-text-muted">
+            {isFlipped ? 'Ответ' : 'Вопрос'}
+          </span>
+        </div>
       </div>
 
       <div className="mt-3 text-sm text-app-text">
@@ -81,7 +100,7 @@ export const QuestionCard: FC<QuestionCardProps> = ({
           {question.category}
         </span>
         <span className="text-xs text-app-accent">
-          {isFlipped ? '← нажми, чтобы вернуться' : 'нажми, чтобы увидеть ответ →'}
+          {isFlipped ? '\u2190 нажми, чтобы вернуться' : 'нажми, чтобы увидеть ответ \u2192'}
         </span>
       </div>
 
