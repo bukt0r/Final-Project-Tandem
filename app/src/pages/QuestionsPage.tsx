@@ -1,93 +1,27 @@
 import type { FC } from 'react'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import type { Question } from '../features/questions'
-import { fetchQuestions } from '../api'
-import { QuestionCard, Loader, ErrorMessage } from '../ui'
-
-type QuestionsState =
-  | { status: 'loading' }
-  | { status: 'error'; message: string }
-  | { status: 'success'; data: readonly Question[] }
+import { getQuestions } from '../entities/question/api/questionsApi'
+import { QuestionCard } from '../ui'
 
 const QuestionsPage: FC = () => {
-  const [state, setState] = useState<QuestionsState>({ status: 'loading' })
-  const cancelRef = useRef<(() => void) | null>(null)
-
-  const loadQuestions = useCallback((): void => {
-    cancelRef.current?.()
-    let cancelled = false
-    cancelRef.current = () => {
-      cancelled = true
-    }
-
-    const load = async (): Promise<void> => {
-      try {
-        const data = await fetchQuestions()
-        if (!cancelled) {
-          setState({ status: 'success', data })
-        }
-      } catch (err) {
-        if (!cancelled) {
-          const message = err instanceof Error ? err.message : 'Не удалось загрузить вопросы'
-          setState({ status: 'error', message })
-        }
-      }
-    }
-
-    void load()
-  }, [])
-
-  useEffect(() => {
-    loadQuestions()
-    return () => {
-      cancelRef.current?.()
-    }
-  }, [loadQuestions])
-
-  const handleRetry = useCallback((): void => {
-    setState({ status: 'loading' })
-    loadQuestions()
-  }, [loadQuestions])
-
-  if (state.status === 'loading') {
-    return (
-      <section className="px-4 py-6">
-        <h1 className="text-xl font-semibold text-app-text">Questions</h1>
-        <Loader className="mt-4" />
-      </section>
-    )
-  }
-
-  if (state.status === 'error') {
-    return (
-      <section className="px-4 py-6">
-        <h1 className="text-xl font-semibold text-app-text">Questions</h1>
-        <div className="mt-4">
-          <ErrorMessage message={state.message} onRetry={handleRetry} />
-        </div>
-      </section>
-    )
-  }
-
-  const questions = state.data
+  const questions = getQuestions()
 
   return (
     <section className="px-4 py-6">
-      <h1 className="text-xl font-semibold text-app-text">Questions</h1>
+      <h1 className="text-xl font-semibold text-app-text">Вопросы</h1>
       <p className="mt-1 text-sm text-app-text-muted">
-        {questions.length} {questions.length === 1 ? 'question' : 'questions'}
+        Всего: {questions.length}
       </p>
-      <ul className="mt-4 flex flex-col gap-3" aria-label="Questions list">
-        {questions.length === 0 ? (
-          <li className="text-sm text-app-text-muted">No questions yet.</li>
-        ) : (
-          questions.map((q) => (
+      {questions.length === 0 ? (
+        <p className="mt-4 text-sm text-app-text-muted">Вопросов пока нет.</p>
+      ) : (
+        <ul className="mt-4 flex flex-col gap-3" aria-label="Список вопросов">
+          {questions.map((q) => (
             <li key={q.id}>
               <QuestionCard question={q} />
             </li>
-          ))
-        )}
-      </ul>
+          ))}
+        </ul>
+      )}
     </section>
   )
 }
