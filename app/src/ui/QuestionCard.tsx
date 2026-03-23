@@ -1,18 +1,34 @@
-import type { FC } from 'react'
+import type { FC, MouseEvent } from 'react'
 import { useState, useCallback } from 'react'
-import type { Question } from '../entities/question/model/types'
+import type { Question, KnowledgeStatus } from '../entities/question/model/types'
 import { DifficultyBadge } from './DifficultyBadge'
 
 export interface QuestionCardProps {
   readonly question: Question
+  readonly knowledgeStatus?: KnowledgeStatus
+  readonly onStatusChange?: (questionId: string, status: KnowledgeStatus) => void
 }
 
-export const QuestionCard: FC<QuestionCardProps> = ({ question }) => {
+export const QuestionCard: FC<QuestionCardProps> = ({
+  question,
+  knowledgeStatus = 'none',
+  onStatusChange,
+}) => {
   const [isFlipped, setIsFlipped] = useState(false)
 
   const handleFlip = useCallback((): void => {
     setIsFlipped((prev) => !prev)
   }, [])
+
+  const handleKnown = useCallback((e: MouseEvent<HTMLButtonElement>): void => {
+    e.stopPropagation()
+    onStatusChange?.(question.id, knowledgeStatus === 'known' ? 'none' : 'known')
+  }, [question.id, knowledgeStatus, onStatusChange])
+
+  const handleUnknown = useCallback((e: MouseEvent<HTMLButtonElement>): void => {
+    e.stopPropagation()
+    onStatusChange?.(question.id, knowledgeStatus === 'unknown' ? 'none' : 'unknown')
+  }, [question.id, knowledgeStatus, onStatusChange])
 
   return (
     <article
@@ -47,6 +63,33 @@ export const QuestionCard: FC<QuestionCardProps> = ({ question }) => {
           {isFlipped ? '← нажми, чтобы вернуться' : 'нажми, чтобы увидеть ответ →'}
         </span>
       </div>
+
+      {isFlipped && (
+        <div className="mt-3 flex gap-2 border-t border-app-border pt-3">
+          <button
+            type="button"
+            onClick={handleKnown}
+            className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition ${
+              knowledgeStatus === 'known'
+                ? 'bg-emerald-500 text-white'
+                : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+            }`}
+          >
+            Знаю
+          </button>
+          <button
+            type="button"
+            onClick={handleUnknown}
+            className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition ${
+              knowledgeStatus === 'unknown'
+                ? 'bg-rose-500 text-white'
+                : 'bg-rose-50 text-rose-700 hover:bg-rose-100'
+            }`}
+          >
+            Не знаю
+          </button>
+        </div>
+      )}
     </article>
   )
 }
