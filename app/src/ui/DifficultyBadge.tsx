@@ -1,18 +1,18 @@
 import type { FC } from 'react'
-import type { QuestionDifficulty } from '../features/questions'
+import type { Difficulty } from '../entities/question/model/types'
 
 export interface DifficultyBadgeProps {
-  readonly difficulty: QuestionDifficulty
+  readonly difficulty: Difficulty
   readonly className?: string
 }
 
-const difficultyStyles: Record<QuestionDifficulty, string> = {
+const difficultyStyles: Record<Difficulty, string> = {
   easy: 'bg-emerald-100 text-emerald-700 ring-emerald-200',
   medium: 'bg-amber-100 text-amber-700 ring-amber-200',
   hard: 'bg-rose-100 text-rose-700 ring-rose-200',
 }
 
-const difficultyLabels: Record<QuestionDifficulty, string> = {
+const difficultyLabels: Record<Difficulty, string> = {
   easy: 'Easy',
   medium: 'Medium',
   hard: 'Hard',
