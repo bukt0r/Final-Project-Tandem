@@ -3,17 +3,18 @@ import { useState, useMemo, useCallback } from 'react'
 import type { KnowledgeStatus } from '../entities/question/model/types'
 import { getQuestions, getCategories, getQuestionsByCategory } from '../entities/question/api/questionsApi'
 import { QuestionCard } from '../ui'
-import { useDebounce } from '../shared'
+import { useDebounce, loadFromStorage, saveToStorage } from '../shared'
 
 const ALL_CATEGORIES = ''
 const SEARCH_DEBOUNCE_MS = 300
+const STORAGE_KEY_STATUS = 'knowledge-status'
 
 type StatusMap = Record<string, KnowledgeStatus>
 
 const QuestionsPage: FC = () => {
   const [selectedCategory, setSelectedCategory] = useState(ALL_CATEGORIES)
   const [searchInput, setSearchInput] = useState('')
-  const [statusMap, setStatusMap] = useState<StatusMap>({})
+  const [statusMap, setStatusMap] = useState<StatusMap>(() => loadFromStorage<StatusMap>(STORAGE_KEY_STATUS, {}))
   const debouncedSearch = useDebounce(searchInput, SEARCH_DEBOUNCE_MS)
 
   const categories = useMemo(() => getCategories(), [])
@@ -38,7 +39,11 @@ const QuestionsPage: FC = () => {
   }, [])
 
   const handleStatusChange = useCallback((questionId: string, status: KnowledgeStatus): void => {
-    setStatusMap((prev) => ({ ...prev, [questionId]: status }))
+    setStatusMap((prev) => {
+      const next = { ...prev, [questionId]: status }
+      saveToStorage(STORAGE_KEY_STATUS, next)
+      return next
+    })
   }, [])
 
   return (

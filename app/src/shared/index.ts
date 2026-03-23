@@ -4,3 +4,4 @@ export const isNonEmptyArray = <T>(value: readonly T[]): value is NonEmptyArray<
   value.length > 0
 
 export { useDebounce } from './useDebounce'
+export { loadFromStorage, saveToStorage } from './storage'
