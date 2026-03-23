@@ -9,6 +9,18 @@ export interface QuestionCardProps {
   readonly onStatusChange?: (questionId: string, status: KnowledgeStatus) => void
 }
 
+const borderByStatus: Record<KnowledgeStatus, string> = {
+  known: 'border-l-emerald-500',
+  unknown: 'border-l-rose-500',
+  none: 'border-l-transparent',
+}
+
+const statusBadge: Record<KnowledgeStatus, { label: string; className: string }> = {
+  known: { label: 'Изучено', className: 'bg-emerald-100 text-emerald-700' },
+  unknown: { label: 'Не изучено', className: 'bg-rose-100 text-rose-700' },
+  none: { label: '', className: '' },
+}
+
 export const QuestionCard: FC<QuestionCardProps> = ({
   question,
   knowledgeStatus = 'none',
@@ -30,9 +42,11 @@ export const QuestionCard: FC<QuestionCardProps> = ({
     onStatusChange?.(question.id, knowledgeStatus === 'unknown' ? 'none' : 'unknown')
   }, [question.id, knowledgeStatus, onStatusChange])
 
+  const badge = statusBadge[knowledgeStatus]
+
   return (
     <article
-      className="cursor-pointer rounded-lg border border-app-border bg-app-surface p-4 shadow-sm transition hover:shadow-md"
+      className={`cursor-pointer rounded-lg border border-app-border border-l-4 bg-app-surface p-4 shadow-sm transition hover:shadow-md ${borderByStatus[knowledgeStatus]}`}
       aria-labelledby={`question-title-${question.id}`}
       onClick={handleFlip}
       role="button"
@@ -45,7 +59,14 @@ export const QuestionCard: FC<QuestionCardProps> = ({
       }}
     >
       <div className="flex items-start justify-between gap-3">
-        <DifficultyBadge difficulty={question.difficulty} className="shrink-0" />
+        <div className="flex items-center gap-2">
+          <DifficultyBadge difficulty={question.difficulty} className="shrink-0" />
+          {knowledgeStatus !== 'none' && (
+            <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${badge.className}`}>
+              {badge.label}
+            </span>
+          )}
+        </div>
         <span className="text-xs text-app-text-muted">
           {isFlipped ? 'Ответ' : 'Вопрос'}
         </span>
