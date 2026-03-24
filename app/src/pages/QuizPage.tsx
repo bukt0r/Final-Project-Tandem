@@ -1,8 +1,9 @@
 import type { FC } from 'react'
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { getQuestions } from '../entities/question/api/questionsApi'
 import { generateQuiz } from '../entities/quiz'
 import type { QuizQuestion } from '../entities/quiz'
+import { addQuizResult } from '../entities/statistics'
 import { DifficultyBadge } from '../ui/DifficultyBadge'
 
 const QUIZ_SIZE = 10
@@ -72,7 +73,17 @@ const QuizPage: FC = () => {
     })
   }, [])
 
+  const savedRef = useRef(false)
+
+  useEffect(() => {
+    if (state.isFinished && !savedRef.current) {
+      savedRef.current = true
+      addQuizResult(state.correctCount, state.questions.length)
+    }
+  }, [state.isFinished, state.correctCount, state.questions.length])
+
   const handleRestart = useCallback((): void => {
+    savedRef.current = false
     setState(createInitialState(generateQuiz(allQuestions, QUIZ_SIZE)))
   }, [allQuestions])
 
