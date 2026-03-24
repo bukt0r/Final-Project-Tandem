@@ -9,6 +9,7 @@ const navItems: readonly { to: string; label: string }[] = [
   { to: ROUTE_PATHS.quiz, label: 'Quiz' },
   { to: ROUTE_PATHS.statistics, label: 'Statistics' },
   { to: ROUTE_PATHS.favorites, label: 'Favorites' },
+  { to: ROUTE_PATHS.addQuestion, label: 'Add Question' },
 ]
 
 const linkClass =
