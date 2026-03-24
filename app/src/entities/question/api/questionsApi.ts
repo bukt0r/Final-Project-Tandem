@@ -3,6 +3,9 @@ import { questions } from '../../../data/questions'
 
 export const getQuestions = (): Question[] => questions
 
+export const getCategories = (): string[] =>
+  [...new Set(questions.map((q) => q.category))].sort()
+
 export const getQuestionById = (id: string): Question | undefined =>
   questions.find((question) => question.id === id)
 
