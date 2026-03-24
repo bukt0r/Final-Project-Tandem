@@ -2,6 +2,7 @@ import type { FC, MouseEvent } from 'react'
 import { useState, useCallback } from 'react'
 import type { Question, KnowledgeStatus } from '../entities/question/model/types'
 import { DifficultyBadge } from './DifficultyBadge'
+import { FormattedText } from './FormattedText'
 
 export interface QuestionCardProps {
   readonly question: Question
@@ -92,7 +93,7 @@ export const QuestionCard: FC<QuestionCardProps> = ({
       </div>
 
       <div className="mt-3 text-sm text-app-text">
-        {isFlipped ? question.answer : question.question}
+        <FormattedText text={isFlipped ? question.answer : question.question} />
       </div>
 
       <div className="mt-3 flex items-center justify-between">
