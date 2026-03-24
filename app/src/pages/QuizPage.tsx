@@ -6,10 +6,12 @@ import { generateQuiz } from '../entities/quiz'
 import type { QuizQuestion } from '../entities/quiz'
 import { addQuizResult } from '../entities/statistics'
 import { DifficultyBadge } from '../ui/DifficultyBadge'
+import { useCountdown } from '../shared'
 
 const QUIZ_SIZE = 10
+const SECONDS_PER_QUESTION = 30
 
-type AnswerState = 'idle' | 'correct' | 'wrong'
+type AnswerState = 'idle' | 'correct' | 'wrong' | 'timeout'
 
 interface QuizState {
   readonly questions: readonly QuizQuestion[]
@@ -39,6 +41,21 @@ const QuizPage: FC = () => {
     createInitialState(generateQuiz(allQuestions, QUIZ_SIZE)),
   )
 
+  const handleTimeout = useCallback((): void => {
+    setState((prev) => {
+      if (prev.answerState !== 'idle') return prev
+      return { ...prev, answerState: 'timeout' }
+    })
+  }, [])
+
+  const { secondsLeft, stop, reset } = useCountdown(handleTimeout)
+
+  useEffect(() => {
+    if (!state.isFinished && state.answerState === 'idle') {
+      reset(SECONDS_PER_QUESTION)
+    }
+  }, [state.currentIndex, state.isFinished, state.answerState, reset])
+
   const currentQuestion = state.questions[state.currentIndex]
 
   const handleSelectOption = useCallback((optionId: string): void => {
@@ -58,7 +75,8 @@ const QuizPage: FC = () => {
         correctCount: isCorrect ? prev.correctCount + 1 : prev.correctCount,
       }
     })
-  }, [])
+    stop()
+  }, [stop])
 
   const handleNext = useCallback((): void => {
     setState((prev) => {
@@ -115,6 +133,8 @@ const QuizPage: FC = () => {
   if (!currentQuestion) return null
 
   const { question, options } = currentQuestion
+  const isAnswered = state.answerState !== 'idle'
+  const timerColor = secondsLeft <= 5 ? 'text-rose-600 border-rose-300 bg-rose-50' : secondsLeft <= 10 ? 'text-amber-600 border-amber-300 bg-amber-50' : 'text-app-accent border-app-accent/30 bg-app-accent/5'
 
   return (
     <section className="px-4 py-6">
@@ -124,6 +144,14 @@ const QuizPage: FC = () => {
           {t('quiz.progress', { current: state.currentIndex + 1, total: state.questions.length })}
         </span>
       </div>
+
+      {!isAnswered && (
+        <div className="mt-3 flex justify-center">
+          <span className={`inline-flex items-center rounded-full border px-4 py-1.5 text-lg font-bold tabular-nums transition-colors ${timerColor}`}>
+            {t('quiz.timer', { seconds: secondsLeft })}
+          </span>
+        </div>
+      )}
 
       <div className="mt-4 rounded-lg border border-app-border bg-app-surface p-4">
         <div className="flex items-center gap-2">
@@ -137,7 +165,7 @@ const QuizPage: FC = () => {
         {options.map((option) => {
           let optionStyle = 'border-app-border bg-app-surface hover:bg-app-bg'
 
-          if (state.answerState !== 'idle') {
+          if (isAnswered) {
             if (option.isCorrect) {
               optionStyle = 'border-emerald-500 bg-emerald-50 text-emerald-700'
             } else if (option.id === state.selectedOptionId) {
@@ -152,7 +180,7 @@ const QuizPage: FC = () => {
               <button
                 type="button"
                 onClick={() => handleSelectOption(option.id)}
-                disabled={state.answerState !== 'idle'}
+                disabled={isAnswered}
                 className={`w-full rounded-lg border p-3 text-left text-sm transition ${optionStyle}`}
               >
                 {option.text}
@@ -162,10 +190,18 @@ const QuizPage: FC = () => {
         })}
       </ul>
 
-      {state.answerState !== 'idle' && (
+      {isAnswered && (
         <div className="mt-4">
-          <p className={`text-sm font-medium ${state.answerState === 'correct' ? 'text-emerald-600' : 'text-rose-600'}`}>
-            {state.answerState === 'correct' ? t('quiz.correct') : t('quiz.wrong')}
+          <p className={`text-sm font-medium ${
+            state.answerState === 'correct' ? 'text-emerald-600'
+            : state.answerState === 'timeout' ? 'text-amber-600'
+            : 'text-rose-600'
+          }`}>
+            {state.answerState === 'correct'
+              ? t('quiz.correct')
+              : state.answerState === 'timeout'
+                ? t('quiz.timeUp')
+                : t('quiz.wrong')}
           </p>
           <button
             type="button"

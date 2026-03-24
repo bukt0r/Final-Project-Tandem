@@ -50,6 +50,8 @@ export const ru = {
     score: '{{correct}} / {{total}}',
     accuracy: '{{percent}}% правильных ответов',
     restart: 'Пройти ещё раз',
+    timeUp: 'Время вышло!',
+    timer: '{{seconds}}с',
   },
   statistics: {
     title: 'Статистика',

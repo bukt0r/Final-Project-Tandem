@@ -50,6 +50,8 @@ export const en = {
     score: '{{correct}} / {{total}}',
     accuracy: '{{percent}}% correct answers',
     restart: 'Try again',
+    timeUp: "Time's up!",
+    timer: '{{seconds}}s',
   },
   statistics: {
     title: 'Statistics',
