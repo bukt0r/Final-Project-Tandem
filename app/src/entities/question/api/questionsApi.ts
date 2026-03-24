@@ -12,6 +12,12 @@ export const getQuestionById = (id: string): Question | undefined =>
 export const getQuestionsByCategory = (category: string): Question[] =>
   questions.filter((question) => question.category === category)
 
+export const getRandomQuestion = (): Question | undefined => {
+  if (questions.length === 0) return undefined
+  const index = Math.floor(Math.random() * questions.length)
+  return questions[index]
+}
+
 export const searchQuestions = (query: string): Question[] => {
   const normalizedQuery = query.trim().toLowerCase()
 
