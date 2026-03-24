@@ -1,5 +1,6 @@
 import type { FC, FormEvent, ChangeEvent } from 'react'
 import { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { Difficulty } from '../entities/question/model/types'
 
 interface FormData {
@@ -20,6 +21,7 @@ const inputClass =
   'mt-1 w-full rounded-md border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text placeholder:text-app-text-muted focus:border-app-accent focus:outline-none focus:ring-1 focus:ring-app-accent'
 
 const AddQuestionPage: FC = () => {
+  const { t } = useTranslation()
   const [form, setForm] = useState<FormData>(INITIAL_FORM)
   const [submitted, setSubmitted] = useState(false)
 
@@ -64,13 +66,13 @@ const AddQuestionPage: FC = () => {
 
   return (
     <section className="px-4 py-6">
-      <h1 className="text-xl font-semibold text-app-text">Добавить вопрос</h1>
-      <p className="mt-1 text-sm text-app-text-muted">Создайте свой вопрос для тренировки.</p>
+      <h1 className="text-xl font-semibold text-app-text">{t('addQuestion.title')}</h1>
+      <p className="mt-1 text-sm text-app-text-muted">{t('addQuestion.description')}</p>
 
       <form onSubmit={handleSubmit} className="mt-4 flex max-w-lg flex-col gap-4" noValidate>
         <div>
           <label htmlFor="field-question" className="block text-sm font-medium text-app-text">
-            Вопрос
+            {t('addQuestion.questionLabel')}
           </label>
           <textarea
             id="field-question"
@@ -78,17 +80,17 @@ const AddQuestionPage: FC = () => {
             value={form.question}
             onChange={handleChange}
             rows={3}
-            placeholder="Введите вопрос..."
+            placeholder={t('addQuestion.questionPlaceholder')}
             className={`${inputClass} resize-y ${isFieldInvalid(form.question) ? 'border-rose-500' : ''}`}
           />
           {isFieldInvalid(form.question) && (
-            <p className="mt-1 text-xs text-rose-600">Обязательное поле</p>
+            <p className="mt-1 text-xs text-rose-600">{t('addQuestion.required')}</p>
           )}
         </div>
 
         <div>
           <label htmlFor="field-answer" className="block text-sm font-medium text-app-text">
-            Ответ
+            {t('addQuestion.answerLabel')}
           </label>
           <textarea
             id="field-answer"
@@ -96,17 +98,17 @@ const AddQuestionPage: FC = () => {
             value={form.answer}
             onChange={handleChange}
             rows={3}
-            placeholder="Введите ответ..."
+            placeholder={t('addQuestion.answerPlaceholder')}
             className={`${inputClass} resize-y ${isFieldInvalid(form.answer) ? 'border-rose-500' : ''}`}
           />
           {isFieldInvalid(form.answer) && (
-            <p className="mt-1 text-xs text-rose-600">Обязательное поле</p>
+            <p className="mt-1 text-xs text-rose-600">{t('addQuestion.required')}</p>
           )}
         </div>
 
         <div>
           <label htmlFor="field-category" className="block text-sm font-medium text-app-text">
-            Категория
+            {t('addQuestion.categoryLabel')}
           </label>
           <input
             id="field-category"
@@ -114,17 +116,17 @@ const AddQuestionPage: FC = () => {
             name="category"
             value={form.category}
             onChange={handleChange}
-            placeholder="Например: JavaScript, React, CSS..."
+            placeholder={t('addQuestion.categoryPlaceholder')}
             className={`${inputClass} ${isFieldInvalid(form.category) ? 'border-rose-500' : ''}`}
           />
           {isFieldInvalid(form.category) && (
-            <p className="mt-1 text-xs text-rose-600">Обязательное поле</p>
+            <p className="mt-1 text-xs text-rose-600">{t('addQuestion.required')}</p>
           )}
         </div>
 
         <div>
           <label htmlFor="field-difficulty" className="block text-sm font-medium text-app-text">
-            Сложность
+            {t('addQuestion.difficultyLabel')}
           </label>
           <select
             id="field-difficulty"
@@ -133,9 +135,9 @@ const AddQuestionPage: FC = () => {
             onChange={handleChange}
             className={inputClass}
           >
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
+            <option value="easy">{t('difficulty.easy')}</option>
+            <option value="medium">{t('difficulty.medium')}</option>
+            <option value="hard">{t('difficulty.hard')}</option>
           </select>
         </div>
 
@@ -143,7 +145,7 @@ const AddQuestionPage: FC = () => {
           type="submit"
           className="self-start rounded-md bg-app-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-app-accent-hover"
         >
-          Сохранить
+          {t('addQuestion.save')}
         </button>
       </form>
     </section>

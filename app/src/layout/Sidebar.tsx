@@ -1,15 +1,16 @@
 import type { FC } from 'react'
 import { NavLink } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ROUTE_PATHS } from '../routing/routePaths'
 import styles from './Layout.module.css'
 
-const navItems: readonly { to: string; label: string }[] = [
-  { to: ROUTE_PATHS.home, label: 'Home' },
-  { to: ROUTE_PATHS.questions, label: 'Questions' },
-  { to: ROUTE_PATHS.quiz, label: 'Quiz' },
-  { to: ROUTE_PATHS.statistics, label: 'Statistics' },
-  { to: ROUTE_PATHS.favorites, label: 'Favorites' },
-  { to: ROUTE_PATHS.addQuestion, label: 'Add Question' },
+const navKeys: readonly { to: string; tKey: string }[] = [
+  { to: ROUTE_PATHS.home, tKey: 'nav.home' },
+  { to: ROUTE_PATHS.questions, tKey: 'nav.questions' },
+  { to: ROUTE_PATHS.quiz, tKey: 'nav.quiz' },
+  { to: ROUTE_PATHS.statistics, tKey: 'nav.statistics' },
+  { to: ROUTE_PATHS.favorites, tKey: 'nav.favorites' },
+  { to: ROUTE_PATHS.addQuestion, tKey: 'nav.addQuestion' },
 ]
 
 const linkClass =
@@ -20,18 +21,20 @@ const getLinkClassName = ({ isActive }: { isActive: boolean }): string =>
   [linkClass, isActive ? activeClass : ''].filter(Boolean).join(' ')
 
 export const Sidebar: FC = () => {
+  const { t } = useTranslation()
+
   return (
     <aside className={styles.sidebar} aria-label="Sidebar navigation">
       <nav className="border-r border-app-border bg-app-bg px-4 py-4" aria-label="Main navigation">
         <ul className="flex flex-col gap-1">
-          {navItems.map((item) => (
+          {navKeys.map((item) => (
             <li key={item.to}>
               <NavLink
                 to={item.to}
                 className={getLinkClassName}
                 end={item.to === ROUTE_PATHS.home}
               >
-                {item.label}
+                {t(item.tKey)}
               </NavLink>
             </li>
           ))}

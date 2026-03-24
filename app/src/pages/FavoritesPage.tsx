@@ -1,5 +1,6 @@
 import type { FC } from 'react'
 import { useState, useMemo, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { KnowledgeStatus } from '../entities/question/model/types'
 import { getQuestions } from '../entities/question/api/questionsApi'
 import { QuestionCard } from '../ui'
@@ -11,6 +12,7 @@ const STORAGE_KEY_FAVORITES = 'favorites'
 type StatusMap = Record<string, KnowledgeStatus>
 
 const FavoritesPage: FC = () => {
+  const { t } = useTranslation()
   const [favorites, setFavorites] = useState<string[]>(() => loadFromStorage<string[]>(STORAGE_KEY_FAVORITES, []))
   const [statusMap, setStatusMap] = useState<StatusMap>(() => loadFromStorage<StatusMap>(STORAGE_KEY_STATUS, {}))
 
@@ -37,13 +39,13 @@ const FavoritesPage: FC = () => {
 
   return (
     <section className="px-4 py-6">
-      <h1 className="text-xl font-semibold text-app-text">Избранное</h1>
+      <h1 className="text-xl font-semibold text-app-text">{t('favorites.title')}</h1>
       <p className="mt-1 text-sm text-app-text-muted">
-        {questions.length === 0 ? 'Вы ещё не добавили вопросы в избранное.' : `Всего: ${questions.length}`}
+        {questions.length === 0 ? t('favorites.empty') : t('favorites.total', { count: questions.length })}
       </p>
 
       {questions.length > 0 && (
-        <ul className="mt-4 flex flex-col gap-3" aria-label="Избранные вопросы">
+        <ul className="mt-4 flex flex-col gap-3" aria-label={t('favorites.title')}>
           {questions.map((q) => (
             <li key={q.id}>
               <QuestionCard

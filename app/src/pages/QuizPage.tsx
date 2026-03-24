@@ -1,5 +1,6 @@
 import type { FC } from 'react'
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { getQuestions } from '../entities/question/api/questionsApi'
 import { generateQuiz } from '../entities/quiz'
 import type { QuizQuestion } from '../entities/quiz'
@@ -31,6 +32,7 @@ function createInitialState(questions: readonly QuizQuestion[]): QuizState {
 }
 
 const QuizPage: FC = () => {
+  const { t } = useTranslation()
   const allQuestions = useMemo(() => getQuestions(), [])
 
   const [state, setState] = useState<QuizState>(() =>
@@ -94,16 +96,16 @@ const QuizPage: FC = () => {
 
     return (
       <section className="px-4 py-6">
-        <h1 className="text-xl font-semibold text-app-text">Результаты</h1>
+        <h1 className="text-xl font-semibold text-app-text">{t('quiz.resultsTitle')}</h1>
         <div className="mt-4 rounded-lg border border-app-border bg-app-surface p-6 text-center">
-          <p className="text-3xl font-bold text-app-text">{correct} / {total}</p>
-          <p className="mt-1 text-sm text-app-text-muted">{percentage}% правильных ответов</p>
+          <p className="text-3xl font-bold text-app-text">{t('quiz.score', { correct, total })}</p>
+          <p className="mt-1 text-sm text-app-text-muted">{t('quiz.accuracy', { percent: percentage })}</p>
           <button
             type="button"
             onClick={handleRestart}
             className="mt-4 rounded-md bg-app-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-app-accent-hover"
           >
-            Пройти ещё раз
+            {t('quiz.restart')}
           </button>
         </div>
       </section>
@@ -117,9 +119,9 @@ const QuizPage: FC = () => {
   return (
     <section className="px-4 py-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-app-text">Квиз</h1>
+        <h1 className="text-xl font-semibold text-app-text">{t('quiz.title')}</h1>
         <span className="text-sm text-app-text-muted">
-          {state.currentIndex + 1} / {state.questions.length}
+          {t('quiz.progress', { current: state.currentIndex + 1, total: state.questions.length })}
         </span>
       </div>
 
@@ -131,7 +133,7 @@ const QuizPage: FC = () => {
         <p className="mt-3 text-sm font-medium text-app-text">{question.question}</p>
       </div>
 
-      <ul className="mt-4 flex flex-col gap-2" aria-label="Варианты ответа">
+      <ul className="mt-4 flex flex-col gap-2" aria-label={t('quiz.title')}>
         {options.map((option) => {
           let optionStyle = 'border-app-border bg-app-surface hover:bg-app-bg'
 
@@ -163,14 +165,14 @@ const QuizPage: FC = () => {
       {state.answerState !== 'idle' && (
         <div className="mt-4">
           <p className={`text-sm font-medium ${state.answerState === 'correct' ? 'text-emerald-600' : 'text-rose-600'}`}>
-            {state.answerState === 'correct' ? 'Правильно!' : 'Неправильно!'}
+            {state.answerState === 'correct' ? t('quiz.correct') : t('quiz.wrong')}
           </p>
           <button
             type="button"
             onClick={handleNext}
             className="mt-2 rounded-md bg-app-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-app-accent-hover"
           >
-            {state.currentIndex + 1 < state.questions.length ? 'Следующий вопрос' : 'Результаты'}
+            {state.currentIndex + 1 < state.questions.length ? t('quiz.next') : t('quiz.showResults')}
           </button>
         </div>
       )}

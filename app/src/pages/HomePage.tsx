@@ -1,10 +1,12 @@
 import type { FC } from 'react'
 import { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { Question } from '../entities/question/model/types'
 import { getRandomQuestion, getQuestions } from '../entities/question/api/questionsApi'
 import { QuestionCard } from '../ui'
 
 const HomePage: FC = () => {
+  const { t } = useTranslation()
   const [randomQuestion, setRandomQuestion] = useState<Question | null>(null)
   const totalQuestions = getQuestions().length
 
@@ -15,9 +17,9 @@ const HomePage: FC = () => {
 
   return (
     <section className="px-4 py-6">
-      <h1 className="text-xl font-semibold text-app-text">Tech Interview Trainer</h1>
+      <h1 className="text-xl font-semibold text-app-text">{t('home.title')}</h1>
       <p className="mt-2 text-sm text-app-text-muted">
-        Тренажёр для подготовки к техническим интервью. Всего вопросов: {totalQuestions}.
+        {t('home.description')} {t('home.totalQuestions', { count: totalQuestions })}
       </p>
 
       <div className="mt-6">
@@ -26,7 +28,7 @@ const HomePage: FC = () => {
           onClick={handleRandom}
           className="rounded-md bg-app-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-app-accent-hover"
         >
-          Случайный вопрос
+          {t('home.randomButton')}
         </button>
       </div>
 

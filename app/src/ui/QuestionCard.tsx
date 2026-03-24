@@ -1,5 +1,6 @@
 import type { FC, MouseEvent } from 'react'
 import { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { Question, KnowledgeStatus } from '../entities/question/model/types'
 import { DifficultyBadge } from './DifficultyBadge'
 import { FormattedText } from './FormattedText'
@@ -18,10 +19,16 @@ const borderByStatus: Record<KnowledgeStatus, string> = {
   none: 'border-l-transparent',
 }
 
-const statusBadge: Record<KnowledgeStatus, { label: string; className: string }> = {
-  known: { label: 'Изучено', className: 'bg-emerald-100 text-emerald-700' },
-  unknown: { label: 'Не изучено', className: 'bg-rose-100 text-rose-700' },
-  none: { label: '', className: '' },
+const statusKeys: Record<KnowledgeStatus, string> = {
+  known: 'card.known',
+  unknown: 'card.unknown',
+  none: '',
+}
+
+const statusBadgeStyle: Record<KnowledgeStatus, string> = {
+  known: 'bg-emerald-100 text-emerald-700',
+  unknown: 'bg-rose-100 text-rose-700',
+  none: '',
 }
 
 export const QuestionCard: FC<QuestionCardProps> = ({
@@ -31,6 +38,7 @@ export const QuestionCard: FC<QuestionCardProps> = ({
   isFavorite = false,
   onFavoriteToggle,
 }) => {
+  const { t } = useTranslation()
   const [isFlipped, setIsFlipped] = useState(false)
 
   const handleFlip = useCallback((): void => {
@@ -52,8 +60,6 @@ export const QuestionCard: FC<QuestionCardProps> = ({
     onFavoriteToggle?.(question.id)
   }, [question.id, onFavoriteToggle])
 
-  const badge = statusBadge[knowledgeStatus]
-
   return (
     <article
       className={`cursor-pointer rounded-lg border border-app-border border-l-4 bg-app-surface p-4 shadow-sm transition hover:shadow-md ${borderByStatus[knowledgeStatus]}`}
@@ -72,8 +78,8 @@ export const QuestionCard: FC<QuestionCardProps> = ({
         <div className="flex items-center gap-2">
           <DifficultyBadge difficulty={question.difficulty} className="shrink-0" />
           {knowledgeStatus !== 'none' && (
-            <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${badge.className}`}>
-              {badge.label}
+            <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${statusBadgeStyle[knowledgeStatus]}`}>
+              {t(statusKeys[knowledgeStatus])}
             </span>
           )}
         </div>
@@ -82,12 +88,12 @@ export const QuestionCard: FC<QuestionCardProps> = ({
             type="button"
             onClick={handleFavorite}
             className={`text-lg transition ${isFavorite ? 'text-amber-400' : 'text-gray-300 hover:text-amber-300'}`}
-            aria-label={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
+            aria-label={isFavorite ? t('card.removeFavorite') : t('card.addFavorite')}
           >
             {isFavorite ? '\u2605' : '\u2606'}
           </button>
           <span className="text-xs text-app-text-muted">
-            {isFlipped ? 'Ответ' : 'Вопрос'}
+            {isFlipped ? t('card.answer') : t('card.question')}
           </span>
         </div>
       </div>
@@ -101,7 +107,7 @@ export const QuestionCard: FC<QuestionCardProps> = ({
           {question.category}
         </span>
         <span className="text-xs text-app-accent">
-          {isFlipped ? '\u2190 нажми, чтобы вернуться' : 'нажми, чтобы увидеть ответ \u2192'}
+          {isFlipped ? t('card.flipToQuestion') : t('card.flipToAnswer')}
         </span>
       </div>
 
@@ -116,7 +122,7 @@ export const QuestionCard: FC<QuestionCardProps> = ({
                 : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
             }`}
           >
-            Знаю
+            {t('card.know')}
           </button>
           <button
             type="button"
@@ -127,7 +133,7 @@ export const QuestionCard: FC<QuestionCardProps> = ({
                 : 'bg-rose-50 text-rose-700 hover:bg-rose-100'
             }`}
           >
-            Не знаю
+            {t('card.dontKnow')}
           </button>
         </div>
       )}
