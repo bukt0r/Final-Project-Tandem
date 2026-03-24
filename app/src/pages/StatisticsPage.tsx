@@ -1,7 +1,13 @@
 import type { FC } from 'react'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { getStatistics, clearStatistics } from '../entities/statistics'
 import type { Statistics } from '../entities/statistics'
+
+interface ChartDataPoint {
+  readonly name: string
+  readonly accuracy: number
+}
 
 function formatDate(iso: string): string {
   const date = new Date(iso)
@@ -14,8 +20,20 @@ function formatDate(iso: string): string {
   })
 }
 
+function formatShortDate(iso: string): string {
+  const date = new Date(iso)
+  return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' })
+}
+
 const StatisticsPage: FC = () => {
   const [stats, setStats] = useState<Statistics>(getStatistics)
+
+  const chartData = useMemo((): ChartDataPoint[] =>
+    stats.history.map((r, i) => ({
+      name: formatShortDate(r.date) || `#${i + 1}`,
+      accuracy: r.total > 0 ? Math.round((r.correct / r.total) * 100) : 0,
+    })),
+  [stats.history])
 
   const handleClear = useCallback((): void => {
     clearStatistics()
@@ -64,6 +82,33 @@ const StatisticsPage: FC = () => {
           <p className="mt-1 text-xs text-app-text-muted">Точность</p>
         </div>
       </div>
+
+      {chartData.length >= 2 && (
+        <div className="mt-6">
+          <h2 className="text-sm font-semibold text-app-text">Динамика точности</h2>
+          <div className="mt-2 rounded-lg border border-app-border bg-app-surface p-4">
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-app-border)" />
+                <XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="var(--color-app-text-muted)" />
+                <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} stroke="var(--color-app-text-muted)" unit="%" />
+                <Tooltip
+                  formatter={(value: number) => [`${value}%`, 'Точность']}
+                  contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="accuracy"
+                  stroke="var(--color-app-accent)"
+                  strokeWidth={2}
+                  dot={{ r: 4, fill: 'var(--color-app-accent)' }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
 
       <h2 className="mt-6 text-sm font-semibold text-app-text">История</h2>
       <ul className="mt-2 flex flex-col gap-2" aria-label="История квизов">
