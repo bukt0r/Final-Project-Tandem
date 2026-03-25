@@ -7,7 +7,7 @@ interface UseSpeechResult {
   readonly stop: () => void
 }
 
-export function useSpeech(lang: string = 'ru-RU'): UseSpeechResult {
+export function useSpeech(lang = 'ru-RU'): UseSpeechResult {
   const isSupported = typeof window !== 'undefined' && 'speechSynthesis' in window
   const [isSpeaking, setIsSpeaking] = useState(false)
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)

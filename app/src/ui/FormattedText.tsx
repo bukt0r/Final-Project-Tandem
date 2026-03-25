@@ -27,7 +27,7 @@ function parseText(text: string): TextSegment[] {
     segments.push({
       type: 'code',
       content: match[2],
-      language: match[1] || 'javascript',
+      language: match[1] ?? 'javascript',
     })
 
     lastIndex = matchIndex + match[0].length

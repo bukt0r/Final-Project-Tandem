@@ -12,7 +12,10 @@ export function useCountdown(onComplete: () => void): UseCountdownResult {
   const [secondsLeft, setSecondsLeft] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
   const onCompleteRef = useRef(onComplete)
-  onCompleteRef.current = onComplete
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete
+  }, [onComplete])
 
   useEffect(() => {
     if (!isRunning || secondsLeft <= 0) return
