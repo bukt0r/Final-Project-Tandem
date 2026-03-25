@@ -93,7 +93,7 @@ const StatisticsPage: FC = () => {
                 <XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="var(--color-app-text-muted)" />
                 <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} stroke="var(--color-app-text-muted)" unit="%" />
                 <Tooltip
-                  formatter={(value: number) => [`${value}%`, t('statistics.accuracy')]}
+                  formatter={(value) => [`${String(value)}%`, t('statistics.accuracy')]}
                   contentStyle={{ fontSize: 12, borderRadius: 8 }}
                 />
                 <Line

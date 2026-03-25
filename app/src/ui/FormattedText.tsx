@@ -26,7 +26,7 @@ function parseText(text: string): TextSegment[] {
 
     segments.push({
       type: 'code',
-      content: match[2],
+      content: match[2] ?? '',
       language: match[1] ?? 'javascript',
     })
 
@@ -43,7 +43,8 @@ function parseText(text: string): TextSegment[] {
 export const FormattedText: FC<FormattedTextProps> = ({ text }) => {
   const segments = parseText(text)
 
-  if (segments.length === 1 && segments[0].type === 'text') {
+  const first = segments[0]
+  if (segments.length === 1 && first?.type === 'text') {
     return <span>{text}</span>
   }
 

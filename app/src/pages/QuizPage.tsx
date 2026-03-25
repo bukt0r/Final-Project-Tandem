@@ -63,6 +63,7 @@ const QuizPage: FC = () => {
       if (prev.answerState !== 'idle') return prev
 
       const current = prev.questions[prev.currentIndex]
+      if (!current) return prev
       const selected = current.options.find((o) => o.id === optionId)
       if (!selected) return prev
 
