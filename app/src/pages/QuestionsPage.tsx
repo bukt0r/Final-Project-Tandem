@@ -1,5 +1,6 @@
 import type { FC, ChangeEvent } from 'react'
 import { useState, useMemo, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { KnowledgeStatus } from '../entities/question/model/types'
 import { getQuestions, getCategories, getQuestionsByCategory } from '../entities/question/api/questionsApi'
 import { QuestionCard } from '../ui'
@@ -11,13 +12,13 @@ const STORAGE_KEY_STATUS = 'knowledge-status'
 const STORAGE_KEY_FAVORITES = 'favorites'
 
 type StatusMap = Record<string, KnowledgeStatus>
-type FavoritesSet = string[]
 
 const QuestionsPage: FC = () => {
+  const { t } = useTranslation()
   const [selectedCategory, setSelectedCategory] = useState(ALL_CATEGORIES)
   const [searchInput, setSearchInput] = useState('')
   const [statusMap, setStatusMap] = useState<StatusMap>(() => loadFromStorage<StatusMap>(STORAGE_KEY_STATUS, {}))
-  const [favorites, setFavorites] = useState<FavoritesSet>(() => loadFromStorage<FavoritesSet>(STORAGE_KEY_FAVORITES, []))
+  const [favorites, setFavorites] = useState<string[]>(() => loadFromStorage<string[]>(STORAGE_KEY_FAVORITES, []))
   const debouncedSearch = useDebounce(searchInput, SEARCH_DEBOUNCE_MS)
 
   const categories = useMemo(() => getCategories(), [])
@@ -61,12 +62,12 @@ const QuestionsPage: FC = () => {
 
   return (
     <section className="px-4 py-6">
-      <h1 className="text-xl font-semibold text-app-text">Вопросы</h1>
+      <h1 className="text-xl font-semibold text-app-text">{t('questions.title')}</h1>
 
       <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="sm:w-64">
           <label htmlFor="category-filter" className="block text-sm font-medium text-app-text-muted">
-            Категория
+            {t('questions.categoryLabel')}
           </label>
           <select
             id="category-filter"
@@ -74,7 +75,7 @@ const QuestionsPage: FC = () => {
             onChange={handleCategoryChange}
             className="mt-1 w-full rounded-md border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text focus:border-app-accent focus:outline-none focus:ring-1 focus:ring-app-accent"
           >
-            <option value={ALL_CATEGORIES}>Все категории</option>
+            <option value={ALL_CATEGORIES}>{t('questions.allCategories')}</option>
             {categories.map((cat) => (
               <option key={cat} value={cat}>{cat}</option>
             ))}
@@ -83,27 +84,27 @@ const QuestionsPage: FC = () => {
 
         <div className="flex-1">
           <label htmlFor="search-input" className="block text-sm font-medium text-app-text-muted">
-            Поиск
+            {t('questions.searchLabel')}
           </label>
           <input
             id="search-input"
             type="text"
             value={searchInput}
             onChange={handleSearchChange}
-            placeholder="Введите текст для поиска..."
+            placeholder={t('questions.searchPlaceholder')}
             className="mt-1 w-full rounded-md border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text placeholder:text-app-text-muted focus:border-app-accent focus:outline-none focus:ring-1 focus:ring-app-accent"
           />
         </div>
       </div>
 
       <p className="mt-3 text-sm text-app-text-muted">
-        Найдено: {questions.length}
+        {t('questions.found', { count: questions.length })}
       </p>
 
       {questions.length === 0 ? (
-        <p className="mt-4 text-sm text-app-text-muted">Вопросов не найдено.</p>
+        <p className="mt-4 text-sm text-app-text-muted">{t('questions.empty')}</p>
       ) : (
-        <ul className="mt-4 flex flex-col gap-3" aria-label="Список вопросов">
+        <ul className="mt-4 flex flex-col gap-3" aria-label={t('questions.title')}>
           {questions.map((q) => (
             <li key={q.id}>
               <QuestionCard

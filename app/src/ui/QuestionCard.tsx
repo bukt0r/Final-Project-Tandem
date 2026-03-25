@@ -1,7 +1,10 @@
 import type { FC, MouseEvent } from 'react'
 import { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { Question, KnowledgeStatus } from '../entities/question/model/types'
 import { DifficultyBadge } from './DifficultyBadge'
+import { FormattedText } from './FormattedText'
+import { useSpeech } from '../shared'
 
 export interface QuestionCardProps {
   readonly question: Question
@@ -17,10 +20,16 @@ const borderByStatus: Record<KnowledgeStatus, string> = {
   none: 'border-l-transparent',
 }
 
-const statusBadge: Record<KnowledgeStatus, { label: string; className: string }> = {
-  known: { label: 'Изучено', className: 'bg-emerald-100 text-emerald-700' },
-  unknown: { label: 'Не изучено', className: 'bg-rose-100 text-rose-700' },
-  none: { label: '', className: '' },
+const statusKeys: Record<KnowledgeStatus, string> = {
+  known: 'card.known',
+  unknown: 'card.unknown',
+  none: '',
+}
+
+const statusBadgeStyle: Record<KnowledgeStatus, string> = {
+  known: 'bg-emerald-100 text-emerald-700',
+  unknown: 'bg-rose-100 text-rose-700',
+  none: '',
 }
 
 export const QuestionCard: FC<QuestionCardProps> = ({
@@ -30,7 +39,20 @@ export const QuestionCard: FC<QuestionCardProps> = ({
   isFavorite = false,
   onFavoriteToggle,
 }) => {
+  const { t, i18n } = useTranslation()
   const [isFlipped, setIsFlipped] = useState(false)
+  const speechLang = i18n.language === 'en' ? 'en-US' : 'ru-RU'
+  const { isSpeaking, isSupported: isSpeechSupported, speak, stop: stopSpeech } = useSpeech(speechLang)
+
+  const handleSpeak = useCallback((e: MouseEvent<HTMLButtonElement>): void => {
+    e.stopPropagation()
+    if (isSpeaking) {
+      stopSpeech()
+    } else {
+      const text = isFlipped ? question.answer : question.question
+      speak(text)
+    }
+  }, [isSpeaking, isFlipped, question.answer, question.question, speak, stopSpeech])
 
   const handleFlip = useCallback((): void => {
     setIsFlipped((prev) => !prev)
@@ -51,8 +73,6 @@ export const QuestionCard: FC<QuestionCardProps> = ({
     onFavoriteToggle?.(question.id)
   }, [question.id, onFavoriteToggle])
 
-  const badge = statusBadge[knowledgeStatus]
-
   return (
     <article
       className={`cursor-pointer rounded-lg border border-app-border border-l-4 bg-app-surface p-4 shadow-sm transition hover:shadow-md ${borderByStatus[knowledgeStatus]}`}
@@ -71,28 +91,38 @@ export const QuestionCard: FC<QuestionCardProps> = ({
         <div className="flex items-center gap-2">
           <DifficultyBadge difficulty={question.difficulty} className="shrink-0" />
           {knowledgeStatus !== 'none' && (
-            <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${badge.className}`}>
-              {badge.label}
+            <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${statusBadgeStyle[knowledgeStatus]}`}>
+              {t(statusKeys[knowledgeStatus])}
             </span>
           )}
         </div>
         <div className="flex items-center gap-2">
+          {isSpeechSupported && (
+            <button
+              type="button"
+              onClick={handleSpeak}
+              className={`text-base transition ${isSpeaking ? 'text-app-accent' : 'text-gray-300 hover:text-app-accent'}`}
+              aria-label={isSpeaking ? t('card.stopSpeaking') : t('card.speak')}
+            >
+              {isSpeaking ? '\u23F9' : '\u25B6'}
+            </button>
+          )}
           <button
             type="button"
             onClick={handleFavorite}
             className={`text-lg transition ${isFavorite ? 'text-amber-400' : 'text-gray-300 hover:text-amber-300'}`}
-            aria-label={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
+            aria-label={isFavorite ? t('card.removeFavorite') : t('card.addFavorite')}
           >
             {isFavorite ? '\u2605' : '\u2606'}
           </button>
           <span className="text-xs text-app-text-muted">
-            {isFlipped ? 'Ответ' : 'Вопрос'}
+            {isFlipped ? t('card.answer') : t('card.question')}
           </span>
         </div>
       </div>
 
       <div className="mt-3 text-sm text-app-text">
-        {isFlipped ? question.answer : question.question}
+        <FormattedText text={isFlipped ? question.answer : question.question} />
       </div>
 
       <div className="mt-3 flex items-center justify-between">
@@ -100,7 +130,7 @@ export const QuestionCard: FC<QuestionCardProps> = ({
           {question.category}
         </span>
         <span className="text-xs text-app-accent">
-          {isFlipped ? '\u2190 нажми, чтобы вернуться' : 'нажми, чтобы увидеть ответ \u2192'}
+          {isFlipped ? t('card.flipToQuestion') : t('card.flipToAnswer')}
         </span>
       </div>
 
@@ -115,7 +145,7 @@ export const QuestionCard: FC<QuestionCardProps> = ({
                 : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
             }`}
           >
-            Знаю
+            {t('card.know')}
           </button>
           <button
             type="button"
@@ -126,7 +156,7 @@ export const QuestionCard: FC<QuestionCardProps> = ({
                 : 'bg-rose-50 text-rose-700 hover:bg-rose-100'
             }`}
           >
-            Не знаю
+            {t('card.dontKnow')}
           </button>
         </div>
       )}
