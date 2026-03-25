@@ -33,6 +33,8 @@ export const en = {
     unknown: 'Unknown',
     addFavorite: 'Add to favorites',
     removeFavorite: 'Remove from favorites',
+    speak: 'Read aloud',
+    stopSpeaking: 'Stop',
   },
   favorites: {
     title: 'Favorites',

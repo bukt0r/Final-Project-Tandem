@@ -33,6 +33,8 @@ export const ru = {
     unknown: 'Не изучено',
     addFavorite: 'Добавить в избранное',
     removeFavorite: 'Убрать из избранного',
+    speak: 'Озвучить',
+    stopSpeaking: 'Остановить',
   },
   favorites: {
     title: 'Избранное',

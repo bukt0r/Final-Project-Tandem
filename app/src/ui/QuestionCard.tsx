@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import type { Question, KnowledgeStatus } from '../entities/question/model/types'
 import { DifficultyBadge } from './DifficultyBadge'
 import { FormattedText } from './FormattedText'
+import { useSpeech } from '../shared'
 
 export interface QuestionCardProps {
   readonly question: Question
@@ -38,8 +39,20 @@ export const QuestionCard: FC<QuestionCardProps> = ({
   isFavorite = false,
   onFavoriteToggle,
 }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [isFlipped, setIsFlipped] = useState(false)
+  const speechLang = i18n.language === 'en' ? 'en-US' : 'ru-RU'
+  const { isSpeaking, isSupported: isSpeechSupported, speak, stop: stopSpeech } = useSpeech(speechLang)
+
+  const handleSpeak = useCallback((e: MouseEvent<HTMLButtonElement>): void => {
+    e.stopPropagation()
+    if (isSpeaking) {
+      stopSpeech()
+    } else {
+      const text = isFlipped ? question.answer : question.question
+      speak(text)
+    }
+  }, [isSpeaking, isFlipped, question.answer, question.question, speak, stopSpeech])
 
   const handleFlip = useCallback((): void => {
     setIsFlipped((prev) => !prev)
@@ -84,6 +97,16 @@ export const QuestionCard: FC<QuestionCardProps> = ({
           )}
         </div>
         <div className="flex items-center gap-2">
+          {isSpeechSupported && (
+            <button
+              type="button"
+              onClick={handleSpeak}
+              className={`text-base transition ${isSpeaking ? 'text-app-accent' : 'text-gray-300 hover:text-app-accent'}`}
+              aria-label={isSpeaking ? t('card.stopSpeaking') : t('card.speak')}
+            >
+              {isSpeaking ? '\u23F9' : '\u25B6'}
+            </button>
+          )}
           <button
             type="button"
             onClick={handleFavorite}
