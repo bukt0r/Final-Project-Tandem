@@ -45,6 +45,7 @@ export const ru = {
     title: 'Квиз',
     intro: '{{questions}} вопросов · {{seconds}} с на ответ',
     start: 'Начать',
+    startOver: 'Начать заново',
     progress: '{{current}} / {{total}}',
     correct: 'Правильно!',
     wrong: 'Неправильно!',

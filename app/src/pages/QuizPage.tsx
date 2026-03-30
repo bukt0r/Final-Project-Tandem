@@ -169,11 +169,20 @@ const QuizPageInner: FC<QuizPageInnerProps> = ({ locale }) => {
 
   return (
     <section className="px-4 py-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-xl font-semibold text-app-text">{t('quiz.title')}</h1>
-        <span className="text-sm text-app-text-muted">
-          {t('quiz.progress', { current: state.currentIndex + 1, total: state.questions.length })}
-        </span>
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-sm text-app-text-muted">
+            {t('quiz.progress', { current: state.currentIndex + 1, total: state.questions.length })}
+          </span>
+          <button
+            type="button"
+            onClick={handleRestart}
+            className="rounded-md border border-app-border bg-app-surface px-3 py-1.5 text-sm font-medium text-app-text transition hover:border-app-accent hover:bg-app-bg"
+          >
+            {t('quiz.startOver')}
+          </button>
+        </div>
       </div>
 
       {!isAnswered && (
