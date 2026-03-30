@@ -1,19 +1,23 @@
 import type { FC } from 'react'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { Question } from '../entities/question/model/types'
-import { getRandomQuestion, getQuestions } from '../entities/question/api/questionsApi'
+import { getRandomQuestion, getQuestions, getQuestionById, parseAppLocale } from '../entities/question/api/questionsApi'
 import { QuestionCard } from '../ui'
 
 const HomePage: FC = () => {
-  const { t } = useTranslation()
-  const [randomQuestion, setRandomQuestion] = useState<Question | null>(null)
-  const totalQuestions = getQuestions().length
+  const { t, i18n } = useTranslation()
+  const [randomQuestionId, setRandomQuestionId] = useState<string | null>(null)
+  const locale = useMemo(() => parseAppLocale(i18n.language), [i18n.language])
+  const totalQuestions = useMemo(() => getQuestions(locale).length, [locale])
+  const randomQuestion = useMemo(
+    () => (randomQuestionId === null ? null : getQuestionById(randomQuestionId, locale) ?? null),
+    [randomQuestionId, locale],
+  )
 
   const handleRandom = useCallback((): void => {
-    const q = getRandomQuestion()
-    if (q) setRandomQuestion(q)
-  }, [])
+    const q = getRandomQuestion(locale)
+    if (q) setRandomQuestionId(q.id)
+  }, [locale])
 
   return (
     <section className="px-4 py-6">

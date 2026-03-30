@@ -2,7 +2,7 @@ import type { FC, ChangeEvent } from 'react'
 import { useState, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { KnowledgeStatus } from '../entities/question/model/types'
-import { getQuestions, getCategories, getQuestionsByCategory } from '../entities/question/api/questionsApi'
+import { getQuestions, getCategoryOptions, getQuestionsByCategoryKey, parseAppLocale } from '../entities/question/api/questionsApi'
 import { QuestionCard } from '../ui'
 import { useDebounce, loadFromStorage, saveToStorage } from '../shared'
 
@@ -14,28 +14,34 @@ const STORAGE_KEY_FAVORITES = 'favorites'
 type StatusMap = Record<string, KnowledgeStatus>
 
 const QuestionsPage: FC = () => {
-  const { t } = useTranslation()
-  const [selectedCategory, setSelectedCategory] = useState(ALL_CATEGORIES)
+  const { t, i18n } = useTranslation()
+  const locale = useMemo(() => parseAppLocale(i18n.language), [i18n.language])
+  const [selectedCategoryKey, setSelectedCategoryKey] = useState(ALL_CATEGORIES)
   const [searchInput, setSearchInput] = useState('')
   const [statusMap, setStatusMap] = useState<StatusMap>(() => loadFromStorage<StatusMap>(STORAGE_KEY_STATUS, {}))
   const [favorites, setFavorites] = useState<string[]>(() => loadFromStorage<string[]>(STORAGE_KEY_FAVORITES, []))
   const debouncedSearch = useDebounce(searchInput, SEARCH_DEBOUNCE_MS)
 
-  const categories = useMemo(() => getCategories(), [])
+  const categoryOptions = useMemo(() => getCategoryOptions(locale), [locale])
+
+  const filterCategoryKey = useMemo(() => {
+    if (selectedCategoryKey === ALL_CATEGORIES) return ALL_CATEGORIES
+    return categoryOptions.some((o) => o.key === selectedCategoryKey) ? selectedCategoryKey : ALL_CATEGORIES
+  }, [selectedCategoryKey, categoryOptions])
 
   const questions = useMemo(() => {
-    const base = selectedCategory === ALL_CATEGORIES
-      ? getQuestions()
-      : getQuestionsByCategory(selectedCategory)
+    const base = filterCategoryKey === ALL_CATEGORIES
+      ? getQuestions(locale)
+      : getQuestionsByCategoryKey(filterCategoryKey, locale)
 
     const query = debouncedSearch.trim().toLowerCase()
     if (query.length === 0) return base
 
     return base.filter((q) => q.question.toLowerCase().includes(query))
-  }, [selectedCategory, debouncedSearch])
+  }, [filterCategoryKey, debouncedSearch, locale])
 
   const handleCategoryChange = useCallback((e: ChangeEvent<HTMLSelectElement>): void => {
-    setSelectedCategory(e.target.value)
+    setSelectedCategoryKey(e.target.value)
   }, [])
 
   const handleSearchChange = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
@@ -71,13 +77,13 @@ const QuestionsPage: FC = () => {
           </label>
           <select
             id="category-filter"
-            value={selectedCategory}
+            value={filterCategoryKey}
             onChange={handleCategoryChange}
             className="mt-1 w-full rounded-md border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text focus:border-app-accent focus:outline-none focus:ring-1 focus:ring-app-accent"
           >
             <option value={ALL_CATEGORIES}>{t('questions.allCategories')}</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
+            {categoryOptions.map((opt) => (
+              <option key={opt.key} value={opt.key}>{opt.label}</option>
             ))}
           </select>
         </div>

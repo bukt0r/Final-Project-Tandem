@@ -1,7 +1,8 @@
 import type { FC } from 'react'
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { getQuestions } from '../entities/question/api/questionsApi'
+import type { AppLocale } from '../entities/question/model/types'
+import { getQuestions, parseAppLocale } from '../entities/question/api/questionsApi'
 import { generateQuiz } from '../entities/quiz'
 import type { QuizQuestion } from '../entities/quiz'
 import { addQuizResult } from '../entities/statistics'
@@ -33,13 +34,19 @@ function createInitialState(questions: readonly QuizQuestion[]): QuizState {
   }
 }
 
-const QuizPage: FC = () => {
+interface QuizPageInnerProps {
+  readonly locale: AppLocale
+}
+
+const QuizPageInner: FC<QuizPageInnerProps> = ({ locale }) => {
   const { t } = useTranslation()
-  const allQuestions = useMemo(() => getQuestions(), [])
+  const allQuestions = useMemo(() => getQuestions(locale), [locale])
 
   const [state, setState] = useState<QuizState>(() =>
-    createInitialState(generateQuiz(allQuestions, QUIZ_SIZE)),
+    createInitialState(generateQuiz(getQuestions(locale), QUIZ_SIZE)),
   )
+
+  const savedRef = useRef(false)
 
   const handleTimeout = useCallback((): void => {
     setState((prev) => {
@@ -93,8 +100,6 @@ const QuizPage: FC = () => {
       }
     })
   }, [])
-
-  const savedRef = useRef(false)
 
   useEffect(() => {
     if (state.isFinished && !savedRef.current) {
@@ -215,6 +220,13 @@ const QuizPage: FC = () => {
       )}
     </section>
   )
+}
+
+const QuizPage: FC = () => {
+  const { i18n } = useTranslation()
+  const locale = useMemo(() => parseAppLocale(i18n.language), [i18n.language])
+
+  return <QuizPageInner key={locale} locale={locale} />
 }
 
 export default QuizPage
