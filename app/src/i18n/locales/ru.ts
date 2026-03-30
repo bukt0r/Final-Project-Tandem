@@ -57,6 +57,8 @@ export const ru = {
     restart: 'Пройти ещё раз',
     timeUp: 'Время вышло!',
     timer: '{{seconds}}с',
+    soundTurnOff: 'Выключить звук квиза',
+    soundTurnOn: 'Включить звук квиза',
   },
   statistics: {
     title: 'Статистика',

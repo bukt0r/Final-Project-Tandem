@@ -1,9 +1,10 @@
 import type { FC } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ROUTE_PATHS } from '../routing/routePaths'
 import { ThemeToggle } from '../ui/ThemeToggle'
 import { LanguageToggle } from '../ui/LanguageToggle'
+import { QuizSoundToggle } from '../ui/QuizSoundToggle'
 import { useTheme } from '../shared'
 
 const navKeys: readonly { to: string; tKey: string }[] = [
@@ -25,6 +26,8 @@ const getLinkClassName = ({ isActive }: { isActive: boolean }): string =>
 export const Header: FC = () => {
   const { theme, toggleTheme } = useTheme()
   const { t } = useTranslation()
+  const { pathname } = useLocation()
+  const isQuizRoute = pathname === ROUTE_PATHS.quiz
 
   return (
     <header className="flex shrink-0 border-b border-app-border bg-app-surface">
@@ -44,6 +47,7 @@ export const Header: FC = () => {
             ))}
           </nav>
           <LanguageToggle />
+          {isQuizRoute ? <QuizSoundToggle /> : null}
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
         </div>
       </div>

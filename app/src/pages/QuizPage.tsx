@@ -7,7 +7,13 @@ import { generateQuiz } from '../entities/quiz'
 import type { QuizQuestion } from '../entities/quiz'
 import { addQuizResult } from '../entities/statistics'
 import { DifficultyBadge } from '../ui/DifficultyBadge'
-import { useCountdown } from '../shared'
+import {
+  bumpQuizSfxSession,
+  playQuizAnswerSfx,
+  playQuizStartSfx,
+  useCountdown,
+  useQuizSfx,
+} from '../shared'
 
 const QUIZ_SIZE = 10
 const SECONDS_PER_QUESTION = 30
@@ -40,6 +46,7 @@ interface QuizPageInnerProps {
 
 const QuizPageInner: FC<QuizPageInnerProps> = ({ locale }) => {
   const { t } = useTranslation()
+  const { muted } = useQuizSfx()
   const allQuestions = useMemo(() => getQuestions(locale), [locale])
 
   const [state, setState] = useState<QuizState>(() =>
@@ -48,6 +55,10 @@ const QuizPageInner: FC<QuizPageInnerProps> = ({ locale }) => {
   const [quizStarted, setQuizStarted] = useState(false)
 
   const savedRef = useRef(false)
+
+  useEffect(() => {
+    bumpQuizSfxSession()
+  }, [locale])
 
   const handleTimeout = useCallback((): void => {
     setState((prev) => {
@@ -115,10 +126,17 @@ const QuizPageInner: FC<QuizPageInnerProps> = ({ locale }) => {
   }, [state.isFinished, state.correctCount, state.questions.length])
 
   const handleRestart = useCallback((): void => {
+    bumpQuizSfxSession()
     savedRef.current = false
     setQuizStarted(false)
     setState(createInitialState(generateQuiz(allQuestions, QUIZ_SIZE)))
   }, [allQuestions])
+
+  useEffect(() => {
+    if (!quizStarted || state.answerState === 'idle') return
+    const kind = state.answerState === 'correct' ? 'correct' : 'wrong'
+    playQuizAnswerSfx(state.currentIndex, kind, muted)
+  }, [quizStarted, state.answerState, state.currentIndex, muted])
 
   if (state.isFinished) {
     const total = state.questions.length
@@ -152,7 +170,10 @@ const QuizPageInner: FC<QuizPageInnerProps> = ({ locale }) => {
         </p>
         <button
           type="button"
-          onClick={() => setQuizStarted(true)}
+          onClick={() => {
+            playQuizStartSfx(muted)
+            setQuizStarted(true)
+          }}
           className="mt-6 rounded-md bg-app-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-app-accent-hover"
         >
           {t('quiz.start')}

@@ -57,6 +57,8 @@ export const en = {
     restart: 'Try again',
     timeUp: "Time's up!",
     timer: '{{seconds}}s',
+    soundTurnOff: 'Mute quiz sounds',
+    soundTurnOn: 'Unmute quiz sounds',
   },
   statistics: {
     title: 'Statistics',
