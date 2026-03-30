@@ -43,6 +43,8 @@ export const en = {
   },
   quiz: {
     title: 'Quiz',
+    intro: '{{questions}} questions · {{seconds}}s per answer',
+    start: 'Start',
     progress: '{{current}} / {{total}}',
     correct: 'Correct!',
     wrong: 'Wrong!',

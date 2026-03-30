@@ -45,6 +45,7 @@ const QuizPageInner: FC<QuizPageInnerProps> = ({ locale }) => {
   const [state, setState] = useState<QuizState>(() =>
     createInitialState(generateQuiz(getQuestions(locale), QUIZ_SIZE)),
   )
+  const [quizStarted, setQuizStarted] = useState(false)
 
   const savedRef = useRef(false)
 
@@ -58,10 +59,15 @@ const QuizPageInner: FC<QuizPageInnerProps> = ({ locale }) => {
   const { secondsLeft, stop, reset } = useCountdown(handleTimeout)
 
   useEffect(() => {
-    if (!state.isFinished && state.answerState === 'idle') {
-      reset(SECONDS_PER_QUESTION)
+    if (!quizStarted) {
+      stop()
     }
-  }, [state.currentIndex, state.isFinished, state.answerState, reset])
+  }, [quizStarted, stop])
+
+  useEffect(() => {
+    if (!quizStarted || state.isFinished || state.answerState !== 'idle') return
+    reset(SECONDS_PER_QUESTION)
+  }, [quizStarted, state.currentIndex, state.isFinished, state.answerState, reset])
 
   const currentQuestion = state.questions[state.currentIndex]
 
@@ -110,6 +116,7 @@ const QuizPageInner: FC<QuizPageInnerProps> = ({ locale }) => {
 
   const handleRestart = useCallback((): void => {
     savedRef.current = false
+    setQuizStarted(false)
     setState(createInitialState(generateQuiz(allQuestions, QUIZ_SIZE)))
   }, [allQuestions])
 
@@ -132,6 +139,24 @@ const QuizPageInner: FC<QuizPageInnerProps> = ({ locale }) => {
             {t('quiz.restart')}
           </button>
         </div>
+      </section>
+    )
+  }
+
+  if (!quizStarted) {
+    return (
+      <section className="px-4 py-6">
+        <h1 className="text-xl font-semibold text-app-text">{t('quiz.title')}</h1>
+        <p className="mt-3 text-sm text-app-text-muted">
+          {t('quiz.intro', { questions: QUIZ_SIZE, seconds: SECONDS_PER_QUESTION })}
+        </p>
+        <button
+          type="button"
+          onClick={() => setQuizStarted(true)}
+          className="mt-6 rounded-md bg-app-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-app-accent-hover"
+        >
+          {t('quiz.start')}
+        </button>
       </section>
     )
   }

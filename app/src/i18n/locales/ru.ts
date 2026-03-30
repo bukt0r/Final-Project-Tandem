@@ -43,6 +43,8 @@ export const ru = {
   },
   quiz: {
     title: 'Квиз',
+    intro: '{{questions}} вопросов · {{seconds}} с на ответ',
+    start: 'Начать',
     progress: '{{current}} / {{total}}',
     correct: 'Правильно!',
     wrong: 'Неправильно!',
