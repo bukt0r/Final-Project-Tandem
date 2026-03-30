@@ -43,6 +43,9 @@ export const ru = {
   },
   quiz: {
     title: 'Квиз',
+    intro: '{{questions}} вопросов · {{seconds}} с на ответ',
+    start: 'Начать',
+    startOver: 'Начать заново',
     progress: '{{current}} / {{total}}',
     correct: 'Правильно!',
     wrong: 'Неправильно!',
@@ -54,6 +57,8 @@ export const ru = {
     restart: 'Пройти ещё раз',
     timeUp: 'Время вышло!',
     timer: '{{seconds}}с',
+    soundTurnOff: 'Выключить звук квиза',
+    soundTurnOn: 'Включить звук квиза',
   },
   statistics: {
     title: 'Статистика',

@@ -1,12 +1,19 @@
 import type { FC } from 'react'
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { getQuestions } from '../entities/question/api/questionsApi'
+import type { AppLocale } from '../entities/question/model/types'
+import { getQuestions, parseAppLocale } from '../entities/question/api/questionsApi'
 import { generateQuiz } from '../entities/quiz'
 import type { QuizQuestion } from '../entities/quiz'
 import { addQuizResult } from '../entities/statistics'
 import { DifficultyBadge } from '../ui/DifficultyBadge'
-import { useCountdown } from '../shared'
+import {
+  bumpQuizSfxSession,
+  playQuizAnswerSfx,
+  playQuizStartSfx,
+  useCountdown,
+  useQuizSfx,
+} from '../shared'
 
 const QUIZ_SIZE = 10
 const SECONDS_PER_QUESTION = 30
@@ -33,13 +40,25 @@ function createInitialState(questions: readonly QuizQuestion[]): QuizState {
   }
 }
 
-const QuizPage: FC = () => {
+interface QuizPageInnerProps {
+  readonly locale: AppLocale
+}
+
+const QuizPageInner: FC<QuizPageInnerProps> = ({ locale }) => {
   const { t } = useTranslation()
-  const allQuestions = useMemo(() => getQuestions(), [])
+  const { muted } = useQuizSfx()
+  const allQuestions = useMemo(() => getQuestions(locale), [locale])
 
   const [state, setState] = useState<QuizState>(() =>
-    createInitialState(generateQuiz(allQuestions, QUIZ_SIZE)),
+    createInitialState(generateQuiz(getQuestions(locale), QUIZ_SIZE)),
   )
+  const [quizStarted, setQuizStarted] = useState(false)
+
+  const savedRef = useRef(false)
+
+  useEffect(() => {
+    bumpQuizSfxSession()
+  }, [locale])
 
   const handleTimeout = useCallback((): void => {
     setState((prev) => {
@@ -51,10 +70,15 @@ const QuizPage: FC = () => {
   const { secondsLeft, stop, reset } = useCountdown(handleTimeout)
 
   useEffect(() => {
-    if (!state.isFinished && state.answerState === 'idle') {
-      reset(SECONDS_PER_QUESTION)
+    if (!quizStarted) {
+      stop()
     }
-  }, [state.currentIndex, state.isFinished, state.answerState, reset])
+  }, [quizStarted, stop])
+
+  useEffect(() => {
+    if (!quizStarted || state.isFinished || state.answerState !== 'idle') return
+    reset(SECONDS_PER_QUESTION)
+  }, [quizStarted, state.currentIndex, state.isFinished, state.answerState, reset])
 
   const currentQuestion = state.questions[state.currentIndex]
 
@@ -94,8 +118,6 @@ const QuizPage: FC = () => {
     })
   }, [])
 
-  const savedRef = useRef(false)
-
   useEffect(() => {
     if (state.isFinished && !savedRef.current) {
       savedRef.current = true
@@ -104,9 +126,17 @@ const QuizPage: FC = () => {
   }, [state.isFinished, state.correctCount, state.questions.length])
 
   const handleRestart = useCallback((): void => {
+    bumpQuizSfxSession()
     savedRef.current = false
+    setQuizStarted(false)
     setState(createInitialState(generateQuiz(allQuestions, QUIZ_SIZE)))
   }, [allQuestions])
+
+  useEffect(() => {
+    if (!quizStarted || state.answerState === 'idle') return
+    const kind = state.answerState === 'correct' ? 'correct' : 'wrong'
+    playQuizAnswerSfx(state.currentIndex, kind, muted)
+  }, [quizStarted, state.answerState, state.currentIndex, muted])
 
   if (state.isFinished) {
     const total = state.questions.length
@@ -131,6 +161,27 @@ const QuizPage: FC = () => {
     )
   }
 
+  if (!quizStarted) {
+    return (
+      <section className="px-4 py-6">
+        <h1 className="text-xl font-semibold text-app-text">{t('quiz.title')}</h1>
+        <p className="mt-3 text-sm text-app-text-muted">
+          {t('quiz.intro', { questions: QUIZ_SIZE, seconds: SECONDS_PER_QUESTION })}
+        </p>
+        <button
+          type="button"
+          onClick={() => {
+            playQuizStartSfx(muted)
+            setQuizStarted(true)
+          }}
+          className="mt-6 rounded-md bg-app-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-app-accent-hover"
+        >
+          {t('quiz.start')}
+        </button>
+      </section>
+    )
+  }
+
   if (!currentQuestion) return null
 
   const { question, options } = currentQuestion
@@ -139,11 +190,20 @@ const QuizPage: FC = () => {
 
   return (
     <section className="px-4 py-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-xl font-semibold text-app-text">{t('quiz.title')}</h1>
-        <span className="text-sm text-app-text-muted">
-          {t('quiz.progress', { current: state.currentIndex + 1, total: state.questions.length })}
-        </span>
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-sm text-app-text-muted">
+            {t('quiz.progress', { current: state.currentIndex + 1, total: state.questions.length })}
+          </span>
+          <button
+            type="button"
+            onClick={handleRestart}
+            className="rounded-md border border-app-border bg-app-surface px-3 py-1.5 text-sm font-medium text-app-text transition hover:border-app-accent hover:bg-app-bg"
+          >
+            {t('quiz.startOver')}
+          </button>
+        </div>
       </div>
 
       {!isAnswered && (
@@ -215,6 +275,13 @@ const QuizPage: FC = () => {
       )}
     </section>
   )
+}
+
+const QuizPage: FC = () => {
+  const { i18n } = useTranslation()
+  const locale = useMemo(() => parseAppLocale(i18n.language), [i18n.language])
+
+  return <QuizPageInner key={locale} locale={locale} />
 }
 
 export default QuizPage

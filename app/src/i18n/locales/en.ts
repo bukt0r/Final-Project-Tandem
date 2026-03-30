@@ -43,6 +43,9 @@ export const en = {
   },
   quiz: {
     title: 'Quiz',
+    intro: '{{questions}} questions · {{seconds}}s per answer',
+    start: 'Start',
+    startOver: 'Start over',
     progress: '{{current}} / {{total}}',
     correct: 'Correct!',
     wrong: 'Wrong!',
@@ -54,6 +57,8 @@ export const en = {
     restart: 'Try again',
     timeUp: "Time's up!",
     timer: '{{seconds}}s',
+    soundTurnOff: 'Mute quiz sounds',
+    soundTurnOn: 'Unmute quiz sounds',
   },
   statistics: {
     title: 'Statistics',
