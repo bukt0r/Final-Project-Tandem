@@ -86,6 +86,10 @@
 - Поддержку двух языков (RU/EN)
 - Возможность добавлять свои вопросы и работать с ними
 
+## Демо-видео
+
+[Demo](https://youtu.be/NH9KH-UcKUI)
+
 ## Доска
 
 [Задачи на GitHub](https://github.com/bukt0r/Final-Project-Tandem/issues)
