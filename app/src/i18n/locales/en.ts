@@ -72,6 +72,11 @@ export const en = {
     accuracy: 'Accuracy',
     chartTitle: 'Accuracy trend',
     historyTitle: 'History',
+    learningTitle: 'Learning progress',
+    learned: 'Learned',
+    notLearned: 'Not learned',
+    totalQuestions: 'Total questions',
+    learningPercent: '{{percent}}% learned',
   },
   addQuestion: {
     title: 'Add Question',

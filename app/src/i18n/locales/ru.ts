@@ -72,6 +72,11 @@ export const ru = {
     accuracy: 'Точность',
     chartTitle: 'Динамика точности',
     historyTitle: 'История',
+    learningTitle: 'Прогресс изучения',
+    learned: 'Изучено',
+    notLearned: 'Не изучено',
+    totalQuestions: 'Всего вопросов',
+    learningPercent: '{{percent}}% изучено',
   },
   addQuestion: {
     title: 'Добавить вопрос',
