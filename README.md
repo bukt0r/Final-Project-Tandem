@@ -60,8 +60,7 @@
 
 ## Deployment
 
-- Production: https://tech-interview-trainer-u3vr.vercel.app/
-- Platform: Vercel
+- [vercel](https://tech-interview-trainer-seven.vercel.app/)
 
 ---
 
