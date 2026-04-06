@@ -125,3 +125,6 @@
 | [#32](https://github.com/bukt0r/Final-Project-Tandem/pull/32) | UI и UX | i18n, Dark theme, **useCountdown**, **useSpeech**, Prism.js |
 | [#41](https://github.com/bukt0r/Final-Project-Tandem/pull/41) | Квиз и звуки | Двуязычные вопросы, Quiz start/restart, Web Audio SFX       |
 
+
+## Место для вопросов (PR)
+ [здесь](https://github.com/bukt0r/Final-Project-Tandem/pull/48)
