@@ -35,7 +35,11 @@ const HomePage: FC = () => {
       saveUserStorage(STORAGE_KEY_STATUS, next)
       return next
     })
-  }, [])
+    setTimeout(() => {
+      const q = getRandomQuestion(locale)
+      if (q) setRandomQuestionId(q.id)
+    }, 400)
+  }, [locale])
 
   const handleFavoriteToggle = useCallback((questionId: string): void => {
     setFavorites((prev) => {
