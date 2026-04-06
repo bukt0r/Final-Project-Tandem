@@ -4,7 +4,13 @@ export const isNonEmptyArray = <T>(value: readonly T[]): value is NonEmptyArray<
   value.length > 0
 
 export { useDebounce } from './useDebounce'
-export { loadFromStorage, saveToStorage } from './storage'
+export {
+  loadFromStorage,
+  saveToStorage,
+  loadUserStorage,
+  saveUserStorage,
+  setStorageUserPrefix,
+} from './storage'
 export { useTheme } from './useTheme'
 export { useCountdown } from './useCountdown'
 export { useSpeech } from './useSpeech'

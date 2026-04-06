@@ -12,6 +12,8 @@ export interface QuestionCardProps {
   readonly onStatusChange?: (questionId: string, status: KnowledgeStatus) => void
   readonly isFavorite?: boolean
   readonly onFavoriteToggle?: (questionId: string) => void
+  readonly isCustom?: boolean
+  readonly onDelete?: (questionId: string) => void
 }
 
 const borderByStatus: Record<KnowledgeStatus, string> = {
@@ -38,6 +40,8 @@ export const QuestionCard: FC<QuestionCardProps> = ({
   onStatusChange,
   isFavorite = false,
   onFavoriteToggle,
+  isCustom = false,
+  onDelete,
 }) => {
   const { t, i18n } = useTranslation()
   const [isFlipped, setIsFlipped] = useState(false)
@@ -72,6 +76,11 @@ export const QuestionCard: FC<QuestionCardProps> = ({
     e.stopPropagation()
     onFavoriteToggle?.(question.id)
   }, [question.id, onFavoriteToggle])
+
+  const handleDelete = useCallback((e: MouseEvent<HTMLButtonElement>): void => {
+    e.stopPropagation()
+    onDelete?.(question.id)
+  }, [question.id, onDelete])
 
   return (
     <article
@@ -126,15 +135,33 @@ export const QuestionCard: FC<QuestionCardProps> = ({
       </div>
 
       <div className="mt-3 flex items-center justify-between">
-        <span className="inline-block rounded bg-app-bg px-2 py-0.5 text-xs text-app-text-muted">
-          {question.category}
-        </span>
-        <span className="text-xs text-app-accent">
-          {isFlipped ? t('card.flipToQuestion') : t('card.flipToAnswer')}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="inline-block rounded bg-app-bg px-2 py-0.5 text-xs text-app-text-muted">
+            {question.category}
+          </span>
+          {isCustom ? (
+            <span className="inline-block rounded bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700">
+              {t('card.custom')}
+            </span>
+          ) : null}
+        </div>
+        <div className="flex items-center gap-2">
+          {isCustom && onDelete ? (
+            <button
+              type="button"
+              onClick={handleDelete}
+              className="text-xs text-rose-400 transition hover:text-rose-600"
+            >
+              {t('card.delete')}
+            </button>
+          ) : null}
+          <span className="text-xs text-app-accent">
+            {isFlipped ? t('card.flipToQuestion') : t('card.flipToAnswer')}
+          </span>
+        </div>
       </div>
 
-      {isFlipped && (
+      {isFlipped && onStatusChange && (
         <div className="mt-3 flex gap-2 border-t border-app-border pt-3">
           <button
             type="button"
