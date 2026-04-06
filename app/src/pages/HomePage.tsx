@@ -14,6 +14,7 @@ type StatusMap = Record<string, KnowledgeStatus>
 const HomePage: FC = () => {
   const { t, i18n } = useTranslation()
   const [randomQuestionId, setRandomQuestionId] = useState<string | null>(null)
+  const [cardRevision, setCardRevision] = useState(0)
   const locale = useMemo(() => parseAppLocale(i18n.language), [i18n.language])
   const totalQuestions = useMemo(() => getQuestions(locale).length, [locale])
   const randomQuestion = useMemo(
@@ -26,7 +27,10 @@ const HomePage: FC = () => {
 
   const handleRandom = useCallback((): void => {
     const q = getRandomQuestion(locale)
-    if (q) setRandomQuestionId(q.id)
+    if (q) {
+      setRandomQuestionId(q.id)
+      setCardRevision((r) => r + 1)
+    }
   }, [locale])
 
   const handleStatusChange = useCallback((questionId: string, status: KnowledgeStatus): void => {
@@ -37,7 +41,10 @@ const HomePage: FC = () => {
     })
     setTimeout(() => {
       const q = getRandomQuestion(locale)
-      if (q) setRandomQuestionId(q.id)
+      if (q) {
+        setRandomQuestionId(q.id)
+        setCardRevision((r) => r + 1)
+      }
     }, 400)
   }, [locale])
 
@@ -71,6 +78,7 @@ const HomePage: FC = () => {
       {randomQuestion !== null && (
         <div className="mt-4">
           <QuestionCard
+            key={`${randomQuestion.id}-${cardRevision}`}
             question={randomQuestion}
             knowledgeStatus={statusMap[randomQuestion.id] ?? 'none'}
             onStatusChange={handleStatusChange}
