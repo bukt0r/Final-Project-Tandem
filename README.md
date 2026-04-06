@@ -42,18 +42,15 @@
 - Общая статистика
 - Статистика по категориям
 - График прогресса за неделю / месяц
-- Календарь / трекер целей
 
 ### Режимы работы
 - Режим викторины (несколько вариантов ответа)
 - Подсчёт правильных ответов
 - Таймер обратного отсчёта
-- Сопоставление терминов (drag & drop)
-- Таблица лидеров (локальная)
 - Возможный мультиплеер (WebSocket)
 
 ### Дополнительные возможности
-- Добавление своих вопросов (с валидацией)
+- Добавление своих вопросов
 - Сохранение данных в localStorage
 - Темизация (светлая / тёмная тема)
 - Локализация (поддержка нескольких языков)
@@ -74,6 +71,17 @@
 - Обработку ошибок API
 
  Ссылка на видео: https://youtu.be/CXYLstaGsKY
+
+## Доска
+
+[Задачи на GitHub](https://github.com/bukt0r/Final-Project-Tandem/issues)
+
+![board screenshot](/development-notes/bukt0r/images/Снимок%20экрана.png)
+
+## Meeting-notes
+[meeting-1](development-notes/bukt0r/Meeting-notes/meeting-1.md)
+[meeting-2](development-notes/bukt0r/Meeting-notes/meeting-2.md)
+[meeting-3](development-notes/bukt0r/Meeting-notes/meeting-3.md)
 
 ## Команда
 
