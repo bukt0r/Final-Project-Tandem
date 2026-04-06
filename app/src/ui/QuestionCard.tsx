@@ -161,7 +161,7 @@ export const QuestionCard: FC<QuestionCardProps> = ({
         </div>
       </div>
 
-      {isFlipped && (
+      {isFlipped && onStatusChange && (
         <div className="mt-3 flex gap-2 border-t border-app-border pt-3">
           <button
             type="button"
