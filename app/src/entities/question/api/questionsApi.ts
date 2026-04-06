@@ -1,16 +1,25 @@
-import type { AppLocale, Question } from '../../question/model/types'
+import type { AppLocale, Question, QuestionSource } from '../../question/model/types'
 import { toLocalizedQuestion } from '../../question/model/locale'
 import { questionSources } from '../../../data/questionSources'
+import { loadUserStorage } from '../../../shared'
 
 export { parseAppLocale } from '../../question/model/locale'
+
+export const CUSTOM_QUESTIONS_KEY = 'custom-questions'
 
 export interface CategoryOption {
   readonly key: string
   readonly label: string
 }
 
+function getAllSources(): readonly QuestionSource[] {
+  const custom = loadUserStorage<QuestionSource[]>(CUSTOM_QUESTIONS_KEY, [])
+  if (custom.length === 0) return questionSources
+  return [...questionSources, ...custom]
+}
+
 function localizeAll(locale: AppLocale): Question[] {
-  return questionSources.map((source) => toLocalizedQuestion(source, locale))
+  return getAllSources().map((source) => toLocalizedQuestion(source, locale))
 }
 
 export const getQuestions = (locale: AppLocale): Question[] => localizeAll(locale)

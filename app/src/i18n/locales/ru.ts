@@ -82,6 +82,7 @@ export const ru = {
     categoryPlaceholder: 'Например: JavaScript, React, CSS...',
     difficultyLabel: 'Сложность',
     save: 'Сохранить',
+    saved: 'Вопрос успешно добавлен!',
     required: 'Обязательное поле',
   },
   auth: {

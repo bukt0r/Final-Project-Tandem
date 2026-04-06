@@ -1,8 +1,9 @@
 import type { FC, FormEvent, ChangeEvent } from 'react'
 import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { Difficulty } from '../entities/question/model/types'
+import type { Difficulty, QuestionSource } from '../entities/question/model/types'
 import { loadUserStorage, saveUserStorage } from '../shared'
+import { CUSTOM_QUESTIONS_KEY } from '../entities/question/api/questionsApi'
 
 interface FormData {
   readonly question: string
@@ -25,17 +26,20 @@ const AddQuestionPage: FC = () => {
   const { t } = useTranslation()
   const [form, setForm] = useState<FormData>(INITIAL_FORM)
   const [submitted, setSubmitted] = useState(false)
+  const [saved, setSaved] = useState(false)
 
   const handleChange = useCallback((
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ): void => {
     const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
+    setSaved(false)
   }, [])
 
   const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
     setSubmitted(true)
+    setSaved(false)
 
     if (
       form.question.trim().length === 0 ||
@@ -45,20 +49,27 @@ const AddQuestionPage: FC = () => {
       return
     }
 
-    const newQuestion = {
+    const text = form.question.trim()
+    const answer = form.answer.trim()
+    const category = form.category.trim()
+    const categoryKey = `custom-${category.toLowerCase().replace(/\s+/g, '-')}`
+
+    const newSource: QuestionSource = {
       id: `custom-${Date.now()}`,
-      question: form.question.trim(),
-      answer: form.answer.trim(),
-      category: form.category.trim(),
+      question: { ru: text, en: text },
+      answer: { ru: answer, en: answer },
+      category: { ru: category, en: category },
+      categoryKey,
       difficulty: form.difficulty,
-      tags: [],
+      tags: { ru: [], en: [] },
     }
 
-    const existing = loadUserStorage<unknown[]>('custom-questions', [])
-    saveUserStorage('custom-questions', [...existing, newQuestion])
+    const existing = loadUserStorage<QuestionSource[]>(CUSTOM_QUESTIONS_KEY, [])
+    saveUserStorage(CUSTOM_QUESTIONS_KEY, [...existing, newSource])
 
     setForm(INITIAL_FORM)
     setSubmitted(false)
+    setSaved(true)
   }, [form])
 
   const isFieldInvalid = (value: string): boolean =>
@@ -147,6 +158,10 @@ const AddQuestionPage: FC = () => {
         >
           {t('addQuestion.save')}
         </button>
+
+        {saved ? (
+          <p className="text-sm font-medium text-emerald-600">{t('addQuestion.saved')}</p>
+        ) : null}
       </form>
     </section>
   )

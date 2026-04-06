@@ -82,6 +82,7 @@ export const en = {
     categoryPlaceholder: 'E.g.: JavaScript, React, CSS...',
     difficultyLabel: 'Difficulty',
     save: 'Save',
+    saved: 'Question added successfully!',
     required: 'Required field',
   },
   auth: {
