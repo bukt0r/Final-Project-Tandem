@@ -2,7 +2,12 @@ import type { FC } from 'react'
 import { useState, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { KnowledgeStatus } from '../entities/question/model/types'
-import { getQuestions, parseAppLocale } from '../entities/question/api/questionsApi'
+import {
+  getQuestions,
+  parseAppLocale,
+  isCustomQuestion,
+  deleteCustomQuestion,
+} from '../entities/question/api/questionsApi'
 import { QuestionCard } from '../ui'
 import { loadUserStorage, saveUserStorage } from '../shared'
 
@@ -16,10 +21,12 @@ const FavoritesPage: FC = () => {
   const locale = useMemo(() => parseAppLocale(i18n.language), [i18n.language])
   const [favorites, setFavorites] = useState<string[]>(() => loadUserStorage<string[]>(STORAGE_KEY_FAVORITES, []))
   const [statusMap, setStatusMap] = useState<StatusMap>(() => loadUserStorage<StatusMap>(STORAGE_KEY_STATUS, {}))
+  const [revision, setRevision] = useState(0)
 
   const questions = useMemo(
     () => getQuestions(locale).filter((q) => favorites.includes(q.id)),
-    [favorites, locale],
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- revision forces re-read after delete
+    [favorites, locale, revision],
   )
 
   const handleStatusChange = useCallback((questionId: string, status: KnowledgeStatus): void => {
@@ -36,6 +43,16 @@ const FavoritesPage: FC = () => {
       saveUserStorage(STORAGE_KEY_FAVORITES, next)
       return next
     })
+  }, [])
+
+  const handleDelete = useCallback((questionId: string): void => {
+    deleteCustomQuestion(questionId)
+    setFavorites((prev) => {
+      const next = prev.filter((id) => id !== questionId)
+      saveUserStorage(STORAGE_KEY_FAVORITES, next)
+      return next
+    })
+    setRevision((r) => r + 1)
   }, [])
 
   return (
@@ -55,6 +72,8 @@ const FavoritesPage: FC = () => {
                 onStatusChange={handleStatusChange}
                 isFavorite
                 onFavoriteToggle={handleFavoriteToggle}
+                isCustom={isCustomQuestion(q.id)}
+                onDelete={handleDelete}
               />
             </li>
           ))}

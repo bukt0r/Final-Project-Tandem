@@ -35,6 +35,8 @@ export const ru = {
     removeFavorite: 'Убрать из избранного',
     speak: 'Озвучить',
     stopSpeaking: 'Остановить',
+    delete: 'Удалить вопрос',
+    custom: 'Ваш вопрос',
   },
   favorites: {
     title: 'Избранное',

@@ -2,7 +2,14 @@ import type { FC, ChangeEvent } from 'react'
 import { useState, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { KnowledgeStatus } from '../entities/question/model/types'
-import { getQuestions, getCategoryOptions, getQuestionsByCategoryKey, parseAppLocale } from '../entities/question/api/questionsApi'
+import {
+  getQuestions,
+  getCategoryOptions,
+  getQuestionsByCategoryKey,
+  parseAppLocale,
+  isCustomQuestion,
+  deleteCustomQuestion,
+} from '../entities/question/api/questionsApi'
 import { QuestionCard } from '../ui'
 import { useDebounce, loadUserStorage, saveUserStorage } from '../shared'
 
@@ -18,11 +25,13 @@ const QuestionsPage: FC = () => {
   const locale = useMemo(() => parseAppLocale(i18n.language), [i18n.language])
   const [selectedCategoryKey, setSelectedCategoryKey] = useState(ALL_CATEGORIES)
   const [searchInput, setSearchInput] = useState('')
+  const [revision, setRevision] = useState(0)
   const [statusMap, setStatusMap] = useState<StatusMap>(() => loadUserStorage<StatusMap>(STORAGE_KEY_STATUS, {}))
   const [favorites, setFavorites] = useState<string[]>(() => loadUserStorage<string[]>(STORAGE_KEY_FAVORITES, []))
   const debouncedSearch = useDebounce(searchInput, SEARCH_DEBOUNCE_MS)
 
-  const categoryOptions = useMemo(() => getCategoryOptions(locale), [locale])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- revision forces re-read after delete
+  const categoryOptions = useMemo(() => getCategoryOptions(locale), [locale, revision])
 
   const filterCategoryKey = useMemo(() => {
     if (selectedCategoryKey === ALL_CATEGORIES) return ALL_CATEGORIES
@@ -38,7 +47,8 @@ const QuestionsPage: FC = () => {
     if (query.length === 0) return base
 
     return base.filter((q) => q.question.toLowerCase().includes(query))
-  }, [filterCategoryKey, debouncedSearch, locale])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- revision forces re-read after delete
+  }, [filterCategoryKey, debouncedSearch, locale, revision])
 
   const handleCategoryChange = useCallback((e: ChangeEvent<HTMLSelectElement>): void => {
     setSelectedCategoryKey(e.target.value)
@@ -64,6 +74,16 @@ const QuestionsPage: FC = () => {
       saveUserStorage(STORAGE_KEY_FAVORITES, next)
       return next
     })
+  }, [])
+
+  const handleDelete = useCallback((questionId: string): void => {
+    deleteCustomQuestion(questionId)
+    setFavorites((prev) => {
+      const next = prev.filter((id) => id !== questionId)
+      saveUserStorage(STORAGE_KEY_FAVORITES, next)
+      return next
+    })
+    setRevision((r) => r + 1)
   }, [])
 
   return (
@@ -119,6 +139,8 @@ const QuestionsPage: FC = () => {
                 onStatusChange={handleStatusChange}
                 isFavorite={favorites.includes(q.id)}
                 onFavoriteToggle={handleFavoriteToggle}
+                isCustom={isCustomQuestion(q.id)}
+                onDelete={handleDelete}
               />
             </li>
           ))}

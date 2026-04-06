@@ -1,7 +1,7 @@
 import type { AppLocale, Question, QuestionSource } from '../../question/model/types'
 import { toLocalizedQuestion } from '../../question/model/locale'
 import { questionSources } from '../../../data/questionSources'
-import { loadUserStorage } from '../../../shared'
+import { loadUserStorage, saveUserStorage } from '../../../shared'
 
 export { parseAppLocale } from '../../question/model/locale'
 
@@ -60,4 +60,14 @@ export const searchQuestions = (query: string, locale: AppLocale): Question[] =>
   return list.filter((question) =>
     question.question.toLowerCase().includes(normalizedQuery),
   )
+}
+
+export function isCustomQuestion(id: string): boolean {
+  return id.startsWith('custom-')
+}
+
+export function deleteCustomQuestion(id: string): void {
+  const custom = loadUserStorage<QuestionSource[]>(CUSTOM_QUESTIONS_KEY, [])
+  const filtered = custom.filter((q) => q.id !== id)
+  saveUserStorage(CUSTOM_QUESTIONS_KEY, filtered)
 }

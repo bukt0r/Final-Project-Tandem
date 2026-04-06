@@ -35,6 +35,8 @@ export const en = {
     removeFavorite: 'Remove from favorites',
     speak: 'Read aloud',
     stopSpeaking: 'Stop',
+    delete: 'Delete question',
+    custom: 'Your question',
   },
   favorites: {
     title: 'Favorites',
