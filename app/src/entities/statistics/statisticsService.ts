@@ -1,5 +1,5 @@
 import type { QuizResult, Statistics } from './types'
-import { loadFromStorage, saveToStorage } from '../../shared'
+import { loadUserStorage, saveUserStorage } from '../../shared'
 
 const STORAGE_KEY = 'quiz-statistics'
 
@@ -9,7 +9,7 @@ function computeAccuracy(correct: number, total: number): number {
 }
 
 export function getStatistics(): Statistics {
-  const history = loadFromStorage<QuizResult[]>(STORAGE_KEY, [])
+  const history = loadUserStorage<QuizResult[]>(STORAGE_KEY, [])
 
   const totalQuizzes = history.length
   const totalCorrect = history.reduce((sum, r) => sum + r.correct, 0)
@@ -25,7 +25,7 @@ export function getStatistics(): Statistics {
 }
 
 export function addQuizResult(correct: number, total: number): void {
-  const history = loadFromStorage<QuizResult[]>(STORAGE_KEY, [])
+  const history = loadUserStorage<QuizResult[]>(STORAGE_KEY, [])
 
   const result: QuizResult = {
     date: new Date().toISOString(),
@@ -33,9 +33,9 @@ export function addQuizResult(correct: number, total: number): void {
     total,
   }
 
-  saveToStorage(STORAGE_KEY, [...history, result])
+  saveUserStorage(STORAGE_KEY, [...history, result])
 }
 
 export function clearStatistics(): void {
-  saveToStorage(STORAGE_KEY, [])
+  saveUserStorage(STORAGE_KEY, [])
 }

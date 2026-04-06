@@ -6,6 +6,7 @@ import { ThemeToggle } from '../ui/ThemeToggle'
 import { LanguageToggle } from '../ui/LanguageToggle'
 import { QuizSoundToggle } from '../ui/QuizSoundToggle'
 import { useTheme } from '../shared'
+import { useAuth } from '../entities/auth'
 
 const navKeys: readonly { to: string; tKey: string }[] = [
   { to: ROUTE_PATHS.home, tKey: 'nav.home' },
@@ -27,6 +28,7 @@ export const Header: FC = () => {
   const { theme, toggleTheme } = useTheme()
   const { t } = useTranslation()
   const { pathname } = useLocation()
+  const { username, logout } = useAuth()
   const isQuizRoute = pathname === ROUTE_PATHS.quiz
 
   return (
@@ -46,9 +48,20 @@ export const Header: FC = () => {
               </NavLink>
             ))}
           </nav>
+          {username ? (
+            <span className="hidden text-xs text-app-text-muted sm:inline">{username}</span>
+          ) : null}
           <LanguageToggle />
           {isQuizRoute ? <QuizSoundToggle /> : null}
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
+          <button
+            type="button"
+            onClick={logout}
+            className="rounded-md px-2 py-1 text-xs font-medium text-app-text-muted transition hover:bg-app-surface-hover hover:text-app-text"
+            aria-label={t('auth.logout')}
+          >
+            {t('auth.logout')}
+          </button>
         </div>
       </div>
     </header>

@@ -2,6 +2,7 @@ import type { FC, FormEvent, ChangeEvent } from 'react'
 import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Difficulty } from '../entities/question/model/types'
+import { loadUserStorage, saveUserStorage } from '../shared'
 
 interface FormData {
   readonly question: string
@@ -53,9 +54,8 @@ const AddQuestionPage: FC = () => {
       tags: [],
     }
 
-    const stored = localStorage.getItem('custom-questions')
-    const existing: unknown[] = stored ? (JSON.parse(stored) as unknown[]) : []
-    localStorage.setItem('custom-questions', JSON.stringify([...existing, newQuestion]))
+    const existing = loadUserStorage<unknown[]>('custom-questions', [])
+    saveUserStorage('custom-questions', [...existing, newQuestion])
 
     setForm(INITIAL_FORM)
     setSubmitted(false)

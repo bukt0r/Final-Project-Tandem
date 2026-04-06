@@ -15,3 +15,22 @@ export function saveToStorage<T>(key: string, value: T): void {
     // quota exceeded or unavailable — silently ignore
   }
 }
+
+let currentUserPrefix: string | null = null
+
+export function setStorageUserPrefix(username: string | null): void {
+  currentUserPrefix = username
+}
+
+function scopedKey(key: string): string {
+  if (!currentUserPrefix) return key
+  return `user:${currentUserPrefix}:${key}`
+}
+
+export function loadUserStorage<T>(key: string, fallback: T): T {
+  return loadFromStorage(scopedKey(key), fallback)
+}
+
+export function saveUserStorage<T>(key: string, value: T): void {
+  saveToStorage(scopedKey(key), value)
+}
