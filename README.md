@@ -103,8 +103,13 @@
 
 [meeting-3](development-notes/bukt0r/Meeting-notes/meeting-3.md)
 
+## Code review
+
+[Внутри дневника](development-notes/bukt0r/bukt0r-2026-03-15.md)
+
+
 ## Команда
 
 - Ментор (Backend): Pavel Altov - https://github.com/user0k
-- Студент (Frontend): Tatyana korlarina - https://github.com/tatyanakorlarina
-- Студент (Frontend):  Viktor Ufimcev - https://github.com/bukt0r
+- Студент (Frontend): Tatyana korlarina - https://github.com/tatyanakorlarina Dev-notes:[dev-notes](development-notes/tatyanakorlarina)
+- Студент (Frontend):  Viktor Ufimcev - https://github.com/bukt0r Dev-notes:[dev-notes](development-notes/bukt0r)
