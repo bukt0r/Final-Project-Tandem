@@ -63,6 +63,8 @@
 - Production: https://tech-interview-trainer-u3vr.vercel.app/
 - Platform: Vercel
 
+---
+
 ## Week 5 Checkpoint Video
 
 Видео демонстрирует:
@@ -72,6 +74,18 @@
 
  Ссылка на видео: https://youtu.be/CXYLstaGsKY
 
+---
+
+## Чем гордимся
+
+Этот проект не просто набор вопросов, а полноценный инструмент для подготовки к интервью.
+
+Внимание стоит обратить на:
+- Режим квиза с таймером и случайными вопросами
+- Систему прогресса обучения и статистики
+- Поддержку двух языков (RU/EN)
+- Возможность добавлять свои вопросы и работать с ними
+
 ## Доска
 
 [Задачи на GitHub](https://github.com/bukt0r/Final-Project-Tandem/issues)
@@ -80,7 +94,9 @@
 
 ## Meeting-notes
 [meeting-1](development-notes/bukt0r/Meeting-notes/meeting-1.md)
+
 [meeting-2](development-notes/bukt0r/Meeting-notes/meeting-2.md)
+
 [meeting-3](development-notes/bukt0r/Meeting-notes/meeting-3.md)
 
 ## Команда
